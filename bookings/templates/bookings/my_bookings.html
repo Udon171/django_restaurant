@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings | Django Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .my-bookings {
+        padding: 3rem 5%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .my-bookings h1 {
+        font-size: 2.5rem;
+        color: #d4af37;
+        margin-bottom: 2rem;
+    }
+
+    .bookings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .booking-card {
+        background-color: #242424;
+        padding: 1.5rem;
+        border-radius: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .booking-card .date-time h3 {
+        color: #d4af37;
+        font-size: 1.2rem;
+    }
+
+    .booking-card .date-time p {
+        color: #999;
+    }
+
+    .booking-card .details p {
+        color: #ccc;
+    }
+
+    .status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status.pending {
+        background-color: #8b6914;
+        color: #fff;
+    }
+
+    .status.confirmed {
+        background-color: #2d5a2d;
+        color: #90ee90;
+    }
+
+    .status.cancelled {
+        background-color: #5a2d2d;
+        color: #ee9090;
+    }
+
+    .status.completed {
+        background-color: #2d4a5a;
+        color: #90c0ee;
+    }
+
+    .no-bookings {
+        text-align: center;
+        padding: 3rem;
+        background-color: #242424;
+        border-radius: 10px;
+    }
+
+    .no-bookings p {
+        color: #999;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .booking-card {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="my-bookings">
+    <h1>My Bookings</h1>
+
+    {% if bookings %}
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-card">
+            <div class="date-time">
+                <h3>{{ booking.date|date:"l, F j, Y" }}</h3>
+                <p>{{ booking.time|time:"g:i A" }}</p>
+            </div>
+            <div class="details">
+                <p><strong>Table:</strong> {{ booking.table.table_number }}</p>
+                <p><strong>Party Size:</strong> {{ booking.party_size }} guests</p>
+            </div>
+            <div class="details">
+                {% if booking.special_requests %}
+                <p><strong>Notes:</strong> {{ booking.special_requests|truncatewords:10 }}</p>
+                {% endif %}
+            </div>
+            <span class="status {{ booking.status }}">{{ booking.get_status_display }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-bookings">
+        <p>You don't have any bookings yet.</p>
+        <a href="{% url 'booking' %}" class="btn">Book a Table</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

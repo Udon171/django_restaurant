@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Book a Table | Django Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .booking-page {
+        padding: 3rem 5%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .booking-page h1 {
+        font-size: 2.5rem;
+        color: #d4af37;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .booking-page .subtitle {
+        text-align: center;
+        color: #ccc;
+        margin-bottom: 3rem;
+    }
+
+    .booking-form {
+        background-color: #242424;
+        padding: 2.5rem;
+        border-radius: 10px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .login-prompt {
+        background-color: #2d2d2d;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-prompt p {
+        margin-bottom: 1rem;
+        color: #ccc;
+    }
+
+    .tables-info {
+        margin-top: 3rem;
+    }
+
+    .tables-info h2 {
+        color: #d4af37;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .tables-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .table-card {
+        background-color: #2d2d2d;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .table-card .icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .table-card h3 {
+        color: #d4af37;
+        font-size: 1rem;
+    }
+
+    .table-card p {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-page">
+    <h1>Book a Table</h1>
+    <p class="subtitle">Reserve your spot for an unforgettable dining experience</p>
+
+    {% if not user.is_authenticated %}
+    <div class="login-prompt">
+        <p>Please log in to make a reservation. This allows you to view and manage your bookings.</p>
+        <a href="{% url 'login' %}?next={% url 'booking' %}" class="btn">Login to Book</a>
+    </div>
+    {% else %}
+    <form method="post" class="booking-form">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_date">Date</label>
+                {{ form.date }}
+            </div>
+            <div class="form-group">
+                <label for="id_time">Time</label>
+                {{ form.time }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_table">Select Table</label>
+                {{ form.table }}
+            </div>
+            <div class="form-group">
+                <label for="id_party_size">Party Size</label>
+                {{ form.party_size }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_special_requests">Special Requests (optional)</label>
+            {{ form.special_requests }}
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">Confirm Booking</button>
+    </form>
+    {% endif %}
+
+    {% if tables %}
+    <div class="tables-info">
+        <h2>Available Tables</h2>
+        <div class="tables-grid">
+            {% for table in tables %}
+            <div class="table-card">
+                <div class="icon">🪑</div>
+                <h3>Table {{ table.table_number }}</h3>
+                <p>Seats {{ table.capacity }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

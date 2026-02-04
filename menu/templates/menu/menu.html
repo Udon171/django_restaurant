@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Our Menu | Django Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .menu-page {
+        padding: 3rem 5%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .menu-page h1 {
+        font-size: 2.5rem;
+        color: #d4af37;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-page .subtitle {
+        text-align: center;
+        color: #ccc;
+        margin-bottom: 3rem;
+    }
+
+    .menu-category {
+        margin-bottom: 3rem;
+    }
+
+    .menu-category h2 {
+        font-size: 1.8rem;
+        color: #d4af37;
+        border-bottom: 2px solid #d4af37;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .menu-category .category-desc {
+        color: #999;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+
+    .menu-items {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .menu-item {
+        background-color: #242424;
+        padding: 1.5rem;
+        border-radius: 10px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+    }
+
+    .menu-item-info h3 {
+        color: #f5f5f5;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-item-info h3 .badges {
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-left: 0.5rem;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-weight: normal;
+    }
+
+    .badge.veg {
+        background-color: #2d5a2d;
+        color: #90ee90;
+    }
+
+    .badge.vegan {
+        background-color: #2d5a4a;
+        color: #90eec0;
+    }
+
+    .badge.gf {
+        background-color: #5a4a2d;
+        color: #eec090;
+    }
+
+    .menu-item-info p {
+        color: #999;
+        line-height: 1.5;
+    }
+
+    .menu-item-price {
+        font-size: 1.3rem;
+        color: #d4af37;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .unavailable {
+        opacity: 0.5;
+    }
+
+    .unavailable::after {
+        content: " (Unavailable)";
+        color: #ee9090;
+        font-size: 0.9rem;
+    }
+
+    .empty-menu {
+        text-align: center;
+        padding: 3rem;
+        background-color: #242424;
+        border-radius: 10px;
+    }
+
+    .empty-menu p {
+        color: #999;
+    }
+
+    @media (max-width: 600px) {
+        .menu-item {
+            grid-template-columns: 1fr;
+        }
+
+        .menu-item-price {
+            text-align: right;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="menu-page">
+    <h1>Our Menu</h1>
+    <p class="subtitle">Discover our carefully curated selection of dishes</p>
+
+    {% if categories %}
+        {% for category in categories %}
+        <div class="menu-category">
+            <h2>{{ category.name }}</h2>
+            {% if category.description %}
+            <p class="category-desc">{{ category.description }}</p>
+            {% endif %}
+
+            <div class="menu-items">
+                {% for item in category.items.all %}
+                <div class="menu-item {% if not item.is_available %}unavailable{% endif %}">
+                    <div class="menu-item-info">
+                        <h3>
+                            {{ item.name }}
+                            <span class="badges">
+                                {% if item.is_vegetarian %}<span class="badge veg">V</span>{% endif %}
+                                {% if item.is_vegan %}<span class="badge vegan">VG</span>{% endif %}
+                                {% if item.is_gluten_free %}<span class="badge gf">GF</span>{% endif %}
+                            </span>
+                        </h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                    <div class="menu-item-price">£{{ item.price }}</div>
+                </div>
+                {% empty %}
+                <p style="color: #999;">No items in this category yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="empty-menu">
+        <p>Our menu is being prepared. Please check back soon!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
