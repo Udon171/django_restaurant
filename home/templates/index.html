@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Django Restaurant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background-color: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #f5f5f5;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920') center/cover no-repeat;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: #d4af37;
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #b8960c;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 5%;
+            background-color: #242424;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #d4af37;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background-color: #1a1a1a;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+        }
+
+        .feature-card p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* Hours Section */
+        .hours {
+            padding: 5rem 5%;
+            text-align: center;
+        }
+
+        .hours h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #d4af37;
+        }
+
+        .hours-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .hours-content p {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0d0d0d;
+            padding: 2rem 5%;
+            text-align: center;
+        }
+
+        footer p {
+            color: #888;
+        }
+
+        footer a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">Django Restaurant</a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/admin/">Admin</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1>Django Restaurant</h1>
+        <p>Experience exquisite dining with a perfect blend of traditional flavors and modern culinary artistry.</p>
+        <a href="/about/" class="btn">Discover Our Story</a>
+    </section>
+
+    <section class="features">
+        <h2>Why Choose Us</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">🍽️</div>
+                <h3>Fine Dining</h3>
+                <p>Indulge in our carefully crafted menu featuring the finest ingredients from local and international sources.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">👨‍🍳</div>
+                <h3>Expert Chefs</h3>
+                <p>Our award-winning chefs bring decades of experience and passion to every dish they create.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🍷</div>
+                <h3>Wine Selection</h3>
+                <p>Explore our extensive wine cellar with selections from the world's most prestigious vineyards.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="hours">
+        <h2>Opening Hours</h2>
+        <div class="hours-content">
+            <p><strong>Monday - Friday:</strong> 11:00 AM - 10:00 PM</p>
+            <p><strong>Saturday:</strong> 10:00 AM - 11:00 PM</p>
+            <p><strong>Sunday:</strong> 10:00 AM - 9:00 PM</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Django Restaurant. All rights reserved. | <a href="/admin/">Staff Login</a></p>
+    </footer>
+</body>
+</html>
