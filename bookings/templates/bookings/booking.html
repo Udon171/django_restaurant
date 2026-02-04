@@ -5,88 +5,352 @@
 {% block extra_css %}
 <style>
     .booking-page {
-        padding: 3rem 5%;
-        max-width: 800px;
+        padding: 2rem 5%;
+        max-width: 1200px;
         margin: 0 auto;
+        min-height: calc(100vh - 160px);
     }
 
-    .booking-page h1 {
-        font-size: 2.5rem;
+    .booking-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    /* Form Section */
+    .booking-form-section h1 {
+        font-size: 2.2rem;
         color: #d4af37;
-        text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
-    .booking-page .subtitle {
-        text-align: center;
-        color: #ccc;
-        margin-bottom: 3rem;
+    .booking-form-section .subtitle {
+        color: #999;
+        margin-bottom: 2rem;
     }
 
     .booking-form {
         background-color: #242424;
-        padding: 2.5rem;
-        border-radius: 10px;
+        padding: 2rem;
+        border-radius: 15px;
     }
 
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-
-    .login-prompt {
-        background-color: #2d2d2d;
-        padding: 2rem;
-        border-radius: 10px;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .login-prompt p {
-        margin-bottom: 1rem;
-        color: #ccc;
-    }
-
-    .tables-info {
-        margin-top: 3rem;
-    }
-
-    .tables-info h2 {
-        color: #d4af37;
-        margin-bottom: 1.5rem;
-        font-size: 1.5rem;
-    }
-
-    .tables-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 1rem;
     }
 
-    .table-card {
-        background-color: #2d2d2d;
-        padding: 1rem;
-        border-radius: 8px;
-        text-align: center;
+    .form-group {
+        margin-bottom: 1.25rem;
     }
 
-    .table-card .icon {
-        font-size: 2rem;
+    .form-group label {
+        display: block;
         margin-bottom: 0.5rem;
-    }
-
-    .table-card h3 {
         color: #d4af37;
-        font-size: 1rem;
-    }
-
-    .table-card p {
-        color: #999;
+        font-weight: bold;
         font-size: 0.9rem;
     }
 
-    @media (max-width: 600px) {
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #444;
+        border-radius: 8px;
+        background-color: #1a1a1a;
+        color: #f5f5f5;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
+    .form-input::placeholder {
+        color: #666;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #d4af37 0%, #b8960c 100%);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-family: inherit;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .submit-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* 3D Table Animation Section */
+    .table-animation-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 500px;
+        perspective: 1000px;
+    }
+
+    .table-scene {
+        width: 300px;
+        height: 300px;
+        position: relative;
+        transform-style: preserve-3d;
+    }
+
+    .table-3d {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotateX(15deg) rotateY(-30deg);
+        transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .table-3d.rotating {
+        animation: tableRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes tableRotate {
+        0% {
+            transform: rotateX(15deg) rotateY(-30deg);
+        }
+        50% {
+            transform: rotateX(45deg) rotateY(180deg);
+        }
+        100% {
+            transform: rotateX(90deg) rotateY(360deg);
+        }
+    }
+
+    /* Table Top */
+    .table-top {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        left: 50px;
+        top: 100px;
+        background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+        border-radius: 10px;
+        transform: translateZ(50px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Table Legs */
+    .table-leg {
+        position: absolute;
+        width: 15px;
+        height: 80px;
+        background: linear-gradient(to right, #654321, #8B4513, #654321);
+        transform-origin: top center;
+    }
+
+    .leg-1 { left: 65px; top: 150px; transform: rotateX(-90deg) translateZ(-30px); }
+    .leg-2 { left: 220px; top: 150px; transform: rotateX(-90deg) translateZ(-30px); }
+    .leg-3 { left: 65px; top: 280px; transform: rotateX(-90deg) translateZ(-30px); }
+    .leg-4 { left: 220px; top: 280px; transform: rotateX(-90deg) translateZ(-30px); }
+
+    /* Table Cloth - appears during animation */
+    .table-cloth {
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        left: 45px;
+        top: 95px;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        border-radius: 12px;
+        transform: translateZ(51px);
+        opacity: 0;
+        transition: opacity 0.8s ease;
+    }
+
+    .table-cloth.visible {
+        opacity: 1;
+    }
+
+    /* Place Settings */
+    .place-settings {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        left: 50px;
+        top: 100px;
+        transform: translateZ(52px);
+        opacity: 0;
+        transition: opacity 0.8s ease 0.3s;
+    }
+
+    .place-settings.visible {
+        opacity: 1;
+    }
+
+    .plate {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(circle, #fff 60%, #ddd 100%);
+        border-radius: 50%;
+        border: 2px solid #ccc;
+    }
+
+    .plate-1 { top: 10px; left: 75px; }
+    .plate-2 { top: 75px; left: 10px; }
+    .plate-3 { top: 75px; left: 140px; }
+    .plate-4 { top: 140px; left: 75px; }
+
+    .glass {
+        position: absolute;
+        width: 15px;
+        height: 25px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+        border: 1px solid rgba(255,255,255,0.5);
+        border-radius: 3px 3px 5px 5px;
+    }
+
+    .glass-1 { top: 5px; left: 130px; }
+    .glass-2 { top: 60px; left: 65px; }
+    .glass-3 { top: 60px; left: 190px; transform: scale(0.8); }
+    .glass-4 { top: 170px; left: 130px; }
+
+    .centerpiece {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        top: 85px;
+        left: 85px;
+        background: radial-gradient(circle, #d4af37 0%, #b8960c 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    /* Confirmation Message */
+    .confirmation-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(26, 26, 26, 0.95);
+        border-radius: 15px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+
+    .confirmation-overlay.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .confirmation-overlay .checkmark {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes popIn {
+        0% { transform: scale(0); }
+        100% { transform: scale(1); }
+    }
+
+    .confirmation-overlay h2 {
+        color: #d4af37;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .confirmation-overlay p {
+        color: #ccc;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .confirmation-overlay .email-note {
+        color: #888;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    .booking-details {
+        background: #242424;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+        text-align: left;
+    }
+
+    .booking-details p {
+        margin: 0.5rem 0;
+    }
+
+    .booking-details strong {
+        color: #d4af37;
+    }
+
+    /* Animation States */
+    .table-animation-section .status-text {
+        margin-top: 1.5rem;
+        color: #888;
+        font-size: 1rem;
+        text-align: center;
+        min-height: 1.5rem;
+    }
+
+    /* Error Messages */
+    .form-errors {
+        background-color: #5a2d2d;
+        color: #ee9090;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+    }
+
+    .form-errors.visible {
+        display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .booking-container {
+            grid-template-columns: 1fr;
+        }
+
+        .table-animation-section {
+            order: -1;
+            min-height: 350px;
+        }
+
+        .table-scene {
+            transform: scale(0.8);
+        }
+    }
+
+    @media (max-width: 500px) {
         .form-row {
             grid-template-columns: 1fr;
         }
@@ -96,62 +360,191 @@
 
 {% block content %}
 <div class="booking-page">
-    <h1>Book a Table</h1>
-    <p class="subtitle">Reserve your spot for an unforgettable dining experience</p>
+    <div class="booking-container">
+        <div class="booking-form-section">
+            <h1>Reserve Your Table</h1>
+            <p class="subtitle">55 tables available • Perfect for parties of 1-12</p>
 
-    {% if not user.is_authenticated %}
-    <div class="login-prompt">
-        <p>Please log in to make a reservation. This allows you to view and manage your bookings.</p>
-        <a href="{% url 'login' %}?next={% url 'booking' %}" class="btn">Login to Book</a>
+            <div class="form-errors" id="formErrors"></div>
+
+            <form class="booking-form" id="bookingForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_guest_name">{{ form.guest_name.label }}</label>
+                    {{ form.guest_name }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_guest_email">{{ form.guest_email.label }}</label>
+                        {{ form.guest_email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_guest_phone">{{ form.guest_phone.label }}</label>
+                        {{ form.guest_phone }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_date">Date</label>
+                        {{ form.date }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_time">Time</label>
+                        {{ form.time }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_party_size">{{ form.party_size.label }}</label>
+                    {{ form.party_size }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_special_requests">{{ form.special_requests.label }}</label>
+                    {{ form.special_requests }}
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Reserve Table
+                </button>
+            </form>
+        </div>
+
+        <div class="table-animation-section">
+            <div class="table-scene">
+                <div class="table-3d" id="table3d">
+                    <!-- Table Top -->
+                    <div class="table-top"></div>
+                    
+                    <!-- Table Legs -->
+                    <div class="table-leg leg-1"></div>
+                    <div class="table-leg leg-2"></div>
+                    <div class="table-leg leg-3"></div>
+                    <div class="table-leg leg-4"></div>
+                    
+                    <!-- Table Cloth (hidden initially) -->
+                    <div class="table-cloth" id="tableCloth"></div>
+                    
+                    <!-- Place Settings (hidden initially) -->
+                    <div class="place-settings" id="placeSettings">
+                        <div class="plate plate-1"></div>
+                        <div class="plate plate-2"></div>
+                        <div class="plate plate-3"></div>
+                        <div class="plate plate-4"></div>
+                        <div class="glass glass-1"></div>
+                        <div class="glass glass-2"></div>
+                        <div class="glass glass-3"></div>
+                        <div class="glass glass-4"></div>
+                        <div class="centerpiece"></div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Overlay -->
+                <div class="confirmation-overlay" id="confirmationOverlay">
+                    <div class="checkmark">✓</div>
+                    <h2>Table Reserved!</h2>
+                    <p>Thank you, <span id="guestNameConfirm"></span>!</p>
+                    <div class="booking-details">
+                        <p><strong>Date:</strong> <span id="dateConfirm"></span></p>
+                        <p><strong>Time:</strong> <span id="timeConfirm"></span></p>
+                        <p><strong>Party:</strong> <span id="partySizeConfirm"></span> guests</p>
+                    </div>
+                    <p class="email-note">📧 Confirmation sent to <span id="emailConfirm"></span></p>
+                </div>
+            </div>
+            <p class="status-text" id="statusText">Your table awaits...</p>
+        </div>
     </div>
-    {% else %}
-    <form method="post" class="booking-form">
-        {% csrf_token %}
-        
-        <div class="form-row">
-            <div class="form-group">
-                <label for="id_date">Date</label>
-                {{ form.date }}
-            </div>
-            <div class="form-group">
-                <label for="id_time">Time</label>
-                {{ form.time }}
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="id_table">Select Table</label>
-                {{ form.table }}
-            </div>
-            <div class="form-group">
-                <label for="id_party_size">Party Size</label>
-                {{ form.party_size }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="id_special_requests">Special Requests (optional)</label>
-            {{ form.special_requests }}
-        </div>
-
-        <button type="submit" class="btn" style="width: 100%;">Confirm Booking</button>
-    </form>
-    {% endif %}
-
-    {% if tables %}
-    <div class="tables-info">
-        <h2>Available Tables</h2>
-        <div class="tables-grid">
-            {% for table in tables %}
-            <div class="table-card">
-                <div class="icon">🪑</div>
-                <h3>Table {{ table.table_number }}</h3>
-                <p>Seats {{ table.capacity }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const form = document.getElementById('bookingForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const table3d = document.getElementById('table3d');
+    const tableCloth = document.getElementById('tableCloth');
+    const placeSettings = document.getElementById('placeSettings');
+    const confirmationOverlay = document.getElementById('confirmationOverlay');
+    const statusText = document.getElementById('statusText');
+    const formErrors = document.getElementById('formErrors');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Preparing your table...';
+        formErrors.classList.remove('visible');
+        statusText.textContent = 'Preparing your table...';
+
+        // Start table rotation animation
+        table3d.classList.add('rotating');
+
+        try {
+            const formData = new FormData(form);
+            const response = await fetch('{% url "submit_booking" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Phase 2: Add cloth (after 1.5s)
+                setTimeout(() => {
+                    statusText.textContent = 'Setting the table...';
+                    tableCloth.classList.add('visible');
+                }, 1500);
+
+                // Phase 3: Add place settings (after 2.3s)
+                setTimeout(() => {
+                    placeSettings.classList.add('visible');
+                }, 2300);
+
+                // Phase 4: Show confirmation (after 3s)
+                setTimeout(() => {
+                    statusText.textContent = '';
+                    confirmationOverlay.classList.add('visible');
+                    
+                    // Populate confirmation details
+                    document.getElementById('guestNameConfirm').textContent = data.booking.name;
+                    document.getElementById('dateConfirm').textContent = data.booking.date;
+                    document.getElementById('timeConfirm').textContent = data.booking.time;
+                    document.getElementById('partySizeConfirm').textContent = data.booking.party_size;
+                    document.getElementById('emailConfirm').textContent = data.booking.email;
+                }, 3000);
+
+            } else {
+                // Show errors
+                table3d.classList.remove('rotating');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Reserve Table';
+                statusText.textContent = 'Please check your details';
+                
+                let errorHtml = '<ul>';
+                for (const [field, errors] of Object.entries(data.errors)) {
+                    errors.forEach(error => {
+                        errorHtml += `<li>${error}</li>`;
+                    });
+                }
+                errorHtml += '</ul>';
+                formErrors.innerHTML = errorHtml;
+                formErrors.classList.add('visible');
+            }
+        } catch (error) {
+            table3d.classList.remove('rotating');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Reserve Table';
+            statusText.textContent = 'Something went wrong. Please try again.';
+            console.error('Booking error:', error);
+        }
+    });
+</script>
 {% endblock %}

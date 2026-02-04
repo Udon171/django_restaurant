@@ -11,6 +11,7 @@ urlpatterns = [
     path('about/', about_views.about_me, name='about'),
     path('admin/', admin.site.urls),
     path('book/', booking_views.booking_page, name='booking'),
+    path('book/submit/', booking_views.submit_booking, name='submit_booking'),
     path('book/success/', booking_views.booking_success, name='booking_success'),
     path('book/my-bookings/', booking_views.my_bookings, name='my_bookings'),
     path('menu/', menu_views.menu_page, name='menu'),
