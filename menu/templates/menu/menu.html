@@ -4,6 +4,78 @@
 
 {% block extra_css %}
 <style>
+    /* Hero Food Gallery */
+    .menu-hero {
+        position: relative;
+        overflow: hidden;
+        height: 350px;
+        margin-bottom: 0;
+    }
+
+    .hero-gallery {
+        display: flex;
+        height: 100%;
+    }
+
+    .hero-image {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .hero-image:hover img {
+        transform: scale(1.1);
+    }
+
+    .hero-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(26,26,26,0.2), rgba(26,26,26,0.8));
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 10;
+        padding: 2rem;
+    }
+
+    .hero-overlay h1 {
+        font-size: 3.5rem;
+        color: #fff;
+        text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-overlay p {
+        font-size: 1.2rem;
+        color: #ddd;
+        text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
+    }
+
+    .hero-badge {
+        margin-top: 1rem;
+        padding: 0.5rem 1.5rem;
+        background: rgba(212, 175, 55, 0.9);
+        color: #1a1a1a;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
     .menu-page {
         padding-top: 1rem;
         padding-left: 5%;
@@ -233,6 +305,115 @@
         color: #999;
     }
 
+    /* Featured Dishes Section */
+    .featured-section {
+        padding: 2rem 5%;
+        background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
+        margin-bottom: 1rem;
+    }
+
+    .featured-section h2 {
+        text-align: center;
+        color: #d4af37;
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .featured-dish {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        aspect-ratio: 1;
+        cursor: pointer;
+    }
+
+    .featured-dish img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .featured-dish:hover img {
+        transform: scale(1.15);
+    }
+
+    .featured-dish .dish-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.25rem;
+        transition: background 0.3s ease;
+    }
+
+    .featured-dish:hover .dish-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    }
+
+    .featured-dish .dish-name {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+    }
+
+    .featured-dish .dish-price {
+        color: #d4af37;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .featured-dish .dish-category {
+        color: #888;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    @media (max-width: 900px) {
+        .featured-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hero-gallery {
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            flex: 1 1 50%;
+            height: 175px;
+        }
+
+        .menu-hero {
+            height: auto;
+        }
+
+        .hero-overlay h1 {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .featured-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .hero-overlay h1 {
+            font-size: 2rem;
+        }
+    }
+
     @media (max-width: 768px) {
         .menu-item {
             grid-template-columns: 1fr;
@@ -270,10 +451,103 @@
 {% endblock %}
 
 {% block content %}
+<!-- Hero Food Gallery -->
+<section class="menu-hero">
+    <div class="hero-gallery">
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600" alt="Grilled steak">
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600" alt="Chef preparing food">
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600" alt="Fresh salad">
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600" alt="Artisan pizza">
+        </div>
+    </div>
+    <div class="hero-overlay">
+        <h1>Our Menu</h1>
+        <p>Fresh ingredients, crafted with passion</p>
+        <span class="hero-badge">✨ 111 Dishes to Explore</span>
+    </div>
+</section>
+
+<!-- Featured Dishes -->
+<section class="featured-section">
+    <h2>Chef's Favourites</h2>
+    <div class="featured-grid">
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400" alt="Ribeye Steak">
+            <div class="dish-overlay">
+                <span class="dish-category">Main Courses</span>
+                <span class="dish-name">28-Day Aged Ribeye</span>
+                <span class="dish-price">£34.95</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400" alt="Lobster">
+            <div class="dish-overlay">
+                <span class="dish-category">Fish & Seafood</span>
+                <span class="dish-name">Grilled Lobster Tail</span>
+                <span class="dish-price">£38.95</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400" alt="Pasta">
+            <div class="dish-overlay">
+                <span class="dish-category">Pasta & Risotto</span>
+                <span class="dish-name">Black Truffle Risotto</span>
+                <span class="dish-price">£24.95</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400" alt="Dessert">
+            <div class="dish-overlay">
+                <span class="dish-category">Desserts</span>
+                <span class="dish-name">Crème Brûlée</span>
+                <span class="dish-price">£8.95</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" alt="Appetizer">
+            <div class="dish-overlay">
+                <span class="dish-category">Starters</span>
+                <span class="dish-name">Tuna Tartare</span>
+                <span class="dish-price">£14.95</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400" alt="Duck">
+            <div class="dish-overlay">
+                <span class="dish-category">Main Courses</span>
+                <span class="dish-name">Pan-Seared Duck</span>
+                <span class="dish-price">£28.95</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400" alt="Seafood Platter">
+            <div class="dish-overlay">
+                <span class="dish-category">Fish & Seafood</span>
+                <span class="dish-name">Seafood Platter</span>
+                <span class="dish-price">£45.00</span>
+            </div>
+        </div>
+        <div class="featured-dish">
+            <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400" alt="Lamb">
+            <div class="dish-overlay">
+                <span class="dish-category">Sunday Lunch</span>
+                <span class="dish-name">Rack of Lamb</span>
+                <span class="dish-price">£26.95</span>
+            </div>
+        </div>
+    </div>
+</section>
+
 <div class="menu-page">
     <div class="menu-header">
-        <h1>Our Menu</h1>
-        <p class="subtitle">Click on a category to explore our dishes</p>
+        <p class="subtitle">👇 Browse all categories below • Click to expand</p>
     </div>
 
     {% if categories %}
