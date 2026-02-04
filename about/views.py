@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
-# Create your views here.
+
 def about_me(request):
-    return HttpResponse("This would be the about page")
+    """Display the about page with contact info and social feed."""
+    return render(request, 'about/about.html')
