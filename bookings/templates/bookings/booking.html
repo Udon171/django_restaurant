@@ -20,7 +20,7 @@
 
     /* Form Section */
     .booking-form-section h1 {
-        font-size: 2.2rem;
+        font-size: clamp(1.8rem, 5vw, 2.2rem);
         color: #d4af37;
         margin-bottom: 0.5rem;
     }
@@ -54,6 +54,11 @@
         font-size: 0.9rem;
     }
 
+    .form-group label .required {
+        color: #ee9090;
+        margin-left: 0.25rem;
+    }
+
     .form-input {
         width: 100%;
         padding: 0.75rem 1rem;
@@ -64,16 +69,21 @@
         font-size: 1rem;
         font-family: inherit;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        min-height: 44px;
     }
 
     .form-input:focus {
         outline: none;
         border-color: #d4af37;
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
     }
 
     .form-input::placeholder {
         color: #666;
+    }
+
+    .form-input:invalid:not(:placeholder-shown) {
+        border-color: #ee9090;
     }
 
     .submit-btn {
@@ -88,9 +98,11 @@
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         font-family: inherit;
+        min-height: 48px;
     }
 
-    .submit-btn:hover {
+    .submit-btn:hover,
+    .submit-btn:focus {
         transform: translateY(-2px);
         box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
     }
@@ -128,8 +140,22 @@
         transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .table-3d.rotating {
-        animation: tableRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+        .table-3d {
+            transition: none;
+        }
+        
+        .table-3d.rotating {
+            animation: none;
+            transform: rotateX(90deg) rotateY(0deg);
+        }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .table-3d.rotating {
+            animation: tableRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
     }
 
     @keyframes tableRotate {
@@ -200,10 +226,12 @@
         letter-spacing: 1px;
     }
 
-    .guest-count-display.highlight {
-        transform: scale(1.1);
-        border-color: rgba(212, 175, 55, 0.8);
-        color: #d4af37;
+    @media (prefers-reduced-motion: no-preference) {
+        .guest-count-display.highlight {
+            transform: scale(1.1);
+            border-color: rgba(212, 175, 55, 0.8);
+            color: #d4af37;
+        }
     }
 
     /* Table Legs - hanging down from corners */
@@ -327,8 +355,10 @@
         display: inline-block;
     }
 
-    .confirmation-section .checkmark.animate {
-        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    @media (prefers-reduced-motion: no-preference) {
+        .confirmation-section .checkmark.animate {
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
     }
 
     @keyframes popIn {
@@ -398,7 +428,16 @@
         display: block;
     }
 
-    /* Responsive */
+    .form-errors ul {
+        margin: 0;
+        padding-left: 1.25rem;
+    }
+
+    .form-errors li {
+        margin: 0.25rem 0;
+    }
+
+    /* Responsive - Tablet */
     @media (max-width: 900px) {
         .booking-container {
             grid-template-columns: 1fr;
@@ -406,17 +445,53 @@
 
         .table-animation-section {
             order: -1;
-            min-height: 350px;
+            min-height: 380px;
+            padding-top: 1rem;
         }
 
         .table-scene {
-            transform: scale(0.8);
+            transform: scale(0.85);
+        }
+
+        .confirmation-section {
+            max-width: 100%;
         }
     }
 
-    @media (max-width: 500px) {
+    /* Responsive - Mobile */
+    @media (max-width: 600px) {
+        .booking-page {
+            padding: 1.5rem 4%;
+        }
+
+        .booking-form {
+            padding: 1.5rem;
+        }
+
         .form-row {
             grid-template-columns: 1fr;
+        }
+
+        .table-scene {
+            transform: scale(0.75);
+        }
+
+        .table-animation-section {
+            min-height: 320px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .table-scene {
+            transform: scale(0.65);
+        }
+
+        .table-animation-section {
+            min-height: 280px;
+        }
+
+        .booking-form-section h1 {
+            font-size: 1.6rem;
         }
     }
 </style>
@@ -425,44 +500,62 @@
 {% block content %}
 <div class="booking-page">
     <div class="booking-container">
-        <div class="booking-form-section">
-            <h1>Reserve Your Table</h1>
+        <section class="booking-form-section" aria-labelledby="booking-heading">
+            <h1 id="booking-heading">Reserve Your Table</h1>
             <p class="subtitle">55 tables available • Perfect for parties of 1-12</p>
 
-            <div class="form-errors" id="formErrors"></div>
+            <div class="form-errors" id="formErrors" role="alert" aria-live="polite"></div>
 
-            <form class="booking-form" id="bookingForm">
+            <form class="booking-form" id="bookingForm" novalidate>
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label for="id_guest_name">{{ form.guest_name.label }}</label>
+                    <label for="id_guest_name">
+                        {{ form.guest_name.label }}
+                        <span class="required" aria-hidden="true">*</span>
+                    </label>
                     {{ form.guest_name }}
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="id_guest_email">{{ form.guest_email.label }}</label>
+                        <label for="id_guest_email">
+                            {{ form.guest_email.label }}
+                            <span class="required" aria-hidden="true">*</span>
+                        </label>
                         {{ form.guest_email }}
                     </div>
                     <div class="form-group">
-                        <label for="id_guest_phone">{{ form.guest_phone.label }}</label>
+                        <label for="id_guest_phone">
+                            {{ form.guest_phone.label }}
+                            <span class="required" aria-hidden="true">*</span>
+                        </label>
                         {{ form.guest_phone }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="id_date">Date</label>
+                        <label for="id_date">
+                            Date
+                            <span class="required" aria-hidden="true">*</span>
+                        </label>
                         {{ form.date }}
                     </div>
                     <div class="form-group">
-                        <label for="id_time">Time</label>
+                        <label for="id_time">
+                            Time
+                            <span class="required" aria-hidden="true">*</span>
+                        </label>
                         {{ form.time }}
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="id_party_size">{{ form.party_size.label }}</label>
+                    <label for="id_party_size">
+                        {{ form.party_size.label }}
+                        <span class="required" aria-hidden="true">*</span>
+                    </label>
                     {{ form.party_size }}
                 </div>
 
@@ -475,18 +568,18 @@
                     Reserve Table
                 </button>
             </form>
-        </div>
+        </section>
 
-        <div class="table-animation-section">
-            <div class="table-scene">
-                <div class="table-3d" id="table3d">
+        <section class="table-animation-section" aria-label="Table reservation visualization">
+            <div class="table-scene" role="img" aria-label="3D visualization of your reserved table">
+                <div class="table-3d" id="table3d" aria-hidden="true">
                     <!-- Table Top with Legs Inside -->
                     <div class="table-top">
                         <div class="table-leg leg-1"></div>
                         <div class="table-leg leg-2"></div>
                         <div class="table-leg leg-3"></div>
                         <div class="table-leg leg-4"></div>
-                        <div class="guest-count-display" id="guestCountDisplay">2</div>
+                        <div class="guest-count-display" id="guestCountDisplay" aria-live="polite" aria-label="Number of guests">2</div>
                     </div>
                     
                     <!-- Table Cloth (hidden initially) -->
@@ -506,12 +599,12 @@
                     </div>
                 </div>
             </div>
-            <p class="status-text" id="statusText">Your table awaits...</p>
+            <p class="status-text" id="statusText" aria-live="polite">Your table awaits...</p>
 
             <!-- Confirmation Section (Below Table) -->
-            <div class="confirmation-section" id="confirmationSection">
-                <div class="checkmark" id="checkmark">✓</div>
-                <h2>Table Reserved!</h2>
+            <div class="confirmation-section" id="confirmationSection" role="region" aria-labelledby="confirm-heading">
+                <div class="checkmark" id="checkmark" aria-hidden="true">✓</div>
+                <h2 id="confirm-heading">Table Reserved!</h2>
                 <p class="thank-you">Thank you, <span id="guestNameConfirm"></span>!</p>
                 <div class="booking-details">
                     <p><strong>Date:</strong> <span id="dateConfirm"></span></p>
@@ -520,7 +613,7 @@
                 </div>
                 <p class="email-note">📧 Confirmation sent to <span id="emailConfirm"></span></p>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 {% endblock %}
@@ -539,16 +632,25 @@
     const guestCountDisplay = document.getElementById('guestCountDisplay');
     const partySizeInput = document.getElementById('id_party_size');
 
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Update guest count display when party size changes
     partySizeInput.addEventListener('input', function() {
         const count = this.value || '0';
         guestCountDisplay.textContent = count;
-        guestCountDisplay.classList.add('highlight');
-        setTimeout(() => guestCountDisplay.classList.remove('highlight'), 300);
+        guestCountDisplay.setAttribute('aria-label', count + ' guests');
+        
+        if (!prefersReducedMotion) {
+            guestCountDisplay.classList.add('highlight');
+            setTimeout(() => guestCountDisplay.classList.remove('highlight'), 300);
+        }
     });
 
     // Initialize with current value
-    guestCountDisplay.textContent = partySizeInput.value || '2';
+    const initialCount = partySizeInput.value || '2';
+    guestCountDisplay.textContent = initialCount;
+    guestCountDisplay.setAttribute('aria-label', initialCount + ' guests');
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -556,10 +658,11 @@
         // Disable button and show loading
         submitBtn.disabled = true;
         submitBtn.textContent = 'Preparing your table...';
+        submitBtn.setAttribute('aria-busy', 'true');
         formErrors.classList.remove('visible');
         statusText.textContent = 'Preparing your table...';
 
-        // Start table rotation animation
+        // Start table rotation animation (if motion allowed)
         table3d.classList.add('rotating');
 
         try {
@@ -575,18 +678,20 @@
             const data = await response.json();
 
             if (data.success) {
-                // Phase 2: Add cloth (after 1.5s)
+                const animationDelay = prefersReducedMotion ? 500 : 1500;
+                
+                // Phase 2: Add cloth
                 setTimeout(() => {
                     statusText.textContent = 'Setting the table...';
                     tableCloth.classList.add('visible');
-                }, 1500);
+                }, animationDelay);
 
-                // Phase 3: Add place settings (after 2.3s)
+                // Phase 3: Add place settings
                 setTimeout(() => {
                     placeSettings.classList.add('visible');
-                }, 2300);
+                }, animationDelay + 800);
 
-                // Phase 4: Show confirmation below table (after 3s)
+                // Phase 4: Show confirmation below table
                 setTimeout(() => {
                     statusText.textContent = '';
                     
@@ -600,32 +705,63 @@
                     // Show confirmation section with animation
                     confirmationSection.classList.add('visible');
                     checkmark.classList.add('animate');
-                }, 3000);
+                    
+                    // Announce to screen readers
+                    announceToScreenReader('Table successfully reserved for ' + data.booking.party_size + ' guests on ' + data.booking.date + ' at ' + data.booking.time);
+                    
+                    // Focus confirmation for keyboard users
+                    confirmationSection.focus();
+                    confirmationSection.setAttribute('tabindex', '-1');
+                }, animationDelay + 1500);
 
             } else {
                 // Show errors
                 table3d.classList.remove('rotating');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Reserve Table';
+                submitBtn.setAttribute('aria-busy', 'false');
                 statusText.textContent = 'Please check your details';
                 
-                let errorHtml = '<ul>';
+                let errorHtml = '<ul role="list">';
+                let errorMessages = [];
                 for (const [field, errors] of Object.entries(data.errors)) {
                     errors.forEach(error => {
                         errorHtml += `<li>${error}</li>`;
+                        errorMessages.push(error);
                     });
                 }
                 errorHtml += '</ul>';
                 formErrors.innerHTML = errorHtml;
                 formErrors.classList.add('visible');
+                
+                // Announce errors to screen readers
+                announceToScreenReader('Booking error: ' + errorMessages.join('. '));
+                
+                // Focus error section
+                formErrors.focus();
+                formErrors.setAttribute('tabindex', '-1');
             }
         } catch (error) {
             table3d.classList.remove('rotating');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Reserve Table';
+            submitBtn.setAttribute('aria-busy', 'false');
             statusText.textContent = 'Something went wrong. Please try again.';
+            announceToScreenReader('An error occurred. Please try again.');
             console.error('Booking error:', error);
         }
     });
+
+    // Screen reader announcements
+    function announceToScreenReader(message) {
+        const announcement = document.createElement('div');
+        announcement.setAttribute('role', 'status');
+        announcement.setAttribute('aria-live', 'assertive');
+        announcement.setAttribute('aria-atomic', 'true');
+        announcement.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+        announcement.textContent = message;
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+    }
 </script>
 {% endblock %}
