@@ -30,8 +30,10 @@
         transition: transform 0.5s ease;
     }
 
-    .hero-image:hover img {
-        transform: scale(1.1);
+    @media (prefers-reduced-motion: no-preference) {
+        .hero-image:hover img {
+            transform: scale(1.1);
+        }
     }
 
     .hero-image::after {
@@ -54,14 +56,14 @@
     }
 
     .hero-overlay h1 {
-        font-size: 3.5rem;
+        font-size: clamp(2rem, 6vw, 3.5rem);
         color: #fff;
         text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
         margin-bottom: 0.5rem;
     }
 
     .hero-overlay p {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
         color: #ddd;
         text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
     }
@@ -125,19 +127,22 @@
     }
 
     .menu-nav-btn {
-        padding: 0.4rem 0.7rem;
+        padding: 0.5rem 0.8rem;
         background-color: #2a2a2a;
         color: #ccc;
-        border: 1px solid #444;
+        border: 2px solid #444;
         border-radius: 20px;
         cursor: pointer;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         font-family: inherit;
         transition: all 0.3s ease;
         white-space: nowrap;
+        min-height: 44px;
+        min-width: 44px;
     }
 
     .menu-nav-btn:hover,
+    .menu-nav-btn:focus,
     .menu-nav-btn.active {
         background-color: #d4af37;
         color: #1a1a1a;
@@ -162,19 +167,26 @@
         padding: 1.25rem 1.5rem;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        font-family: inherit;
     }
 
-    .category-header:hover {
+    .category-header:hover,
+    .category-header:focus {
         background-color: #2d2d2d;
     }
 
     .category-header h2 {
-        font-size: 1.4rem;
+        font-size: clamp(1.1rem, 3vw, 1.4rem);
         color: #d4af37;
         margin: 0;
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        flex-wrap: wrap;
     }
 
     .category-header .item-count {
@@ -197,6 +209,12 @@
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.4s ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .category-content {
+            transition: none;
+        }
     }
 
     .menu-category.active .category-content {
@@ -231,9 +249,12 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .menu-item:hover {
-        transform: translateX(5px);
-        box-shadow: -3px 0 0 #d4af37;
+    @media (prefers-reduced-motion: no-preference) {
+        .menu-item:hover,
+        .menu-item:focus-within {
+            transform: translateX(5px);
+            box-shadow: -3px 0 0 #d4af37;
+        }
     }
 
     .menu-item-info h3 {
@@ -250,9 +271,9 @@
 
     .badge {
         font-size: 0.65rem;
-        padding: 0.15rem 0.4rem;
+        padding: 0.2rem 0.45rem;
         border-radius: 3px;
-        font-weight: normal;
+        font-weight: bold;
     }
 
     .badge.veg {
@@ -270,9 +291,22 @@
         color: #eec090;
     }
 
+    /* Screen reader text for badges */
+    .badge .sr-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
     .menu-item-info p {
         color: #888;
-        line-height: 1.4;
+        line-height: 1.5;
         font-size: 0.95rem;
     }
 
@@ -315,7 +349,7 @@
     .featured-section h2 {
         text-align: center;
         color: #d4af37;
-        font-size: 1.8rem;
+        font-size: clamp(1.5rem, 4vw, 1.8rem);
         margin-bottom: 2rem;
     }
 
@@ -332,7 +366,6 @@
         border-radius: 15px;
         overflow: hidden;
         aspect-ratio: 1;
-        cursor: pointer;
     }
 
     .featured-dish img {
@@ -342,8 +375,11 @@
         transition: transform 0.4s ease;
     }
 
-    .featured-dish:hover img {
-        transform: scale(1.15);
+    @media (prefers-reduced-motion: no-preference) {
+        .featured-dish:hover img,
+        .featured-dish:focus-within img {
+            transform: scale(1.15);
+        }
     }
 
     .featured-dish .dish-overlay {
@@ -357,13 +393,14 @@
         transition: background 0.3s ease;
     }
 
-    .featured-dish:hover .dish-overlay {
+    .featured-dish:hover .dish-overlay,
+    .featured-dish:focus-within .dish-overlay {
         background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
     }
 
     .featured-dish .dish-name {
         color: #fff;
-        font-size: 1.1rem;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
         font-weight: bold;
         margin-bottom: 0.25rem;
     }
@@ -380,6 +417,7 @@
         margin-bottom: 0.25rem;
     }
 
+    /* Responsive - Tablet */
     @media (max-width: 900px) {
         .featured-grid {
             grid-template-columns: repeat(2, 1fr);
@@ -397,20 +435,30 @@
         .menu-hero {
             height: auto;
         }
-
-        .hero-overlay h1 {
-            font-size: 2.5rem;
-        }
     }
 
+    /* Responsive - Mobile */
     @media (max-width: 600px) {
         .featured-grid {
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
 
-        .hero-overlay h1 {
-            font-size: 2rem;
+        .menu-nav-wrapper {
+            top: 60px;
+            padding: 0.5rem 3%;
+            margin-left: -5%;
+            margin-right: -5%;
+        }
+
+        .menu-nav {
+            gap: 0.3rem;
+        }
+
+        .menu-nav-btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.6rem;
+            min-height: 40px;
         }
     }
 
@@ -423,28 +471,27 @@
             text-align: right;
         }
 
-        .category-header h2 {
-            font-size: 1.2rem;
+        .category-inner {
+            padding: 0 1rem 1rem;
         }
 
-        .menu-nav-btn {
-            font-size: 0.7rem;
-            padding: 0.35rem 0.5rem;
-        }
-
-        .menu-nav-wrapper {
-            top: 60px;
-        }
-
-        .menu-nav {
-            gap: 0.3rem;
+        .category-header {
+            padding: 1rem;
         }
     }
 
     @media (max-width: 480px) {
-        .menu-nav-btn {
-            font-size: 0.65rem;
-            padding: 0.3rem 0.45rem;
+        .featured-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .featured-dish {
+            aspect-ratio: 16/9;
+        }
+
+        .hero-image {
+            flex: 1 1 100%;
+            height: 150px;
         }
     }
 </style>
@@ -452,146 +499,146 @@
 
 {% block content %}
 <!-- Hero Food Gallery -->
-<section class="menu-hero">
-    <div class="hero-gallery">
+<section class="menu-hero" aria-labelledby="menu-hero-heading">
+    <div class="hero-gallery" role="img" aria-label="Collage of delicious dishes">
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600" alt="Grilled steak">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600" alt="Perfectly grilled steak with herbs" loading="lazy">
         </div>
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600" alt="Chef preparing food">
+            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600" alt="Chef preparing gourmet food" loading="lazy">
         </div>
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600" alt="Fresh salad">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600" alt="Colorful fresh salad bowl" loading="lazy">
         </div>
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600" alt="Artisan pizza">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600" alt="Wood-fired artisan pizza" loading="lazy">
         </div>
     </div>
     <div class="hero-overlay">
-        <h1>Our Menu</h1>
+        <h1 id="menu-hero-heading">Our Menu</h1>
         <p>Fresh ingredients, crafted with passion</p>
-        <span class="hero-badge">✨ 111 Dishes to Explore</span>
+        <span class="hero-badge" aria-label="111 dishes available">✨ 111 Dishes to Explore</span>
     </div>
 </section>
 
 <!-- Featured Dishes -->
-<section class="featured-section">
-    <h2>Chef's Favourites</h2>
-    <div class="featured-grid">
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400" alt="Ribeye Steak">
+<section class="featured-section" aria-labelledby="featured-heading">
+    <h2 id="featured-heading">Chef's Favourites</h2>
+    <div class="featured-grid" role="list">
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400" alt="28-Day Aged Ribeye Steak" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Main Courses</span>
                 <span class="dish-name">28-Day Aged Ribeye</span>
                 <span class="dish-price">£34.95</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400" alt="Lobster">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400" alt="Grilled Lobster Tail with butter sauce" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Fish & Seafood</span>
                 <span class="dish-name">Grilled Lobster Tail</span>
                 <span class="dish-price">£38.95</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400" alt="Pasta">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400" alt="Black Truffle Risotto" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Pasta & Risotto</span>
                 <span class="dish-name">Black Truffle Risotto</span>
                 <span class="dish-price">£24.95</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400" alt="Dessert">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400" alt="Classic Crème Brûlée dessert" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Desserts</span>
                 <span class="dish-name">Crème Brûlée</span>
                 <span class="dish-price">£8.95</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" alt="Appetizer">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" alt="Fresh Tuna Tartare appetizer" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Starters</span>
                 <span class="dish-name">Tuna Tartare</span>
                 <span class="dish-price">£14.95</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400" alt="Duck">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400" alt="Pan-Seared Duck with orange glaze" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Main Courses</span>
                 <span class="dish-name">Pan-Seared Duck</span>
                 <span class="dish-price">£28.95</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400" alt="Seafood Platter">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400" alt="Fresh Seafood Platter for sharing" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Fish & Seafood</span>
                 <span class="dish-name">Seafood Platter</span>
                 <span class="dish-price">£45.00</span>
             </div>
-        </div>
-        <div class="featured-dish">
-            <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400" alt="Lamb">
+        </article>
+        <article class="featured-dish" role="listitem">
+            <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400" alt="Roasted Rack of Lamb" loading="lazy">
             <div class="dish-overlay">
                 <span class="dish-category">Sunday Lunch</span>
                 <span class="dish-name">Rack of Lamb</span>
                 <span class="dish-price">£26.95</span>
             </div>
-        </div>
+        </article>
     </div>
 </section>
 
 <div class="menu-page">
     <div class="menu-header">
-        <p class="subtitle">👇 Browse all categories below • Click to expand</p>
+        <p class="subtitle" id="menu-instructions">👇 Browse all categories below • Click to expand</p>
     </div>
 
     {% if categories %}
         <div class="menu-nav-wrapper">
-            <nav class="menu-nav">
+            <nav class="menu-nav" aria-label="Menu category navigation">
                 {% for category in categories %}
-                <button class="menu-nav-btn" data-target="category-{{ category.id }}">{% if category.name == "Pasta & Risotto" %}Pasta{% elif category.name == "Fish & Seafood" %}Fish{% elif category.name == "Main Courses" %}Mains{% elif category.name == "Children's Menu" %}Kids{% elif category.name == "Sunday Lunch" %}Sunday{% elif category.name == "Brunch Mains" %}Brunch{% elif category.name == "Brunch Desserts" %}Brunch Sweets{% else %}{{ category.name }}{% endif %}</button>
+                <button class="menu-nav-btn" data-target="category-{{ category.id }}" aria-label="Jump to {% if category.name == "Pasta & Risotto" %}Pasta{% elif category.name == "Fish & Seafood" %}Fish{% elif category.name == "Main Courses" %}Mains{% elif category.name == "Children's Menu" %}Kids{% elif category.name == "Sunday Lunch" %}Sunday{% elif category.name == "Brunch Mains" %}Brunch{% elif category.name == "Brunch Desserts" %}Brunch Sweets{% else %}{{ category.name }}{% endif %} category">{% if category.name == "Pasta & Risotto" %}Pasta{% elif category.name == "Fish & Seafood" %}Fish{% elif category.name == "Main Courses" %}Mains{% elif category.name == "Children's Menu" %}Kids{% elif category.name == "Sunday Lunch" %}Sunday{% elif category.name == "Brunch Mains" %}Brunch{% elif category.name == "Brunch Desserts" %}Brunch Sweets{% else %}{{ category.name }}{% endif %}</button>
                 {% endfor %}
             </nav>
         </div>
 
-        <div class="menu-content">
+        <div class="menu-content" role="region" aria-describedby="menu-instructions">
         {% for category in categories %}
         <div class="menu-category {% if forloop.first %}active{% endif %}" id="category-{{ category.id }}">
-            <div class="category-header" onclick="toggleCategory(this)">
+            <button class="category-header" onclick="toggleCategory(this)" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="content-{{ category.id }}">
                 <h2>
                     {{ category.name }}
                     <span class="item-count">({{ category.items.count }} items)</span>
                 </h2>
-                <span class="toggle-icon">▼</span>
-            </div>
+                <span class="toggle-icon" aria-hidden="true">▼</span>
+            </button>
 
-            <div class="category-content">
+            <div class="category-content" id="content-{{ category.id }}" role="region" aria-labelledby="heading-{{ category.id }}">
                 <div class="category-inner">
                     {% if category.description %}
                     <p class="category-desc">{{ category.description }}</p>
                     {% endif %}
 
-                    <div class="menu-items">
+                    <div class="menu-items" role="list">
                         {% for item in category.items.all %}
-                        <div class="menu-item {% if not item.is_available %}unavailable{% endif %}">
+                        <article class="menu-item {% if not item.is_available %}unavailable{% endif %}" role="listitem">
                             <div class="menu-item-info">
-                                <h3>
+                                <h3 id="item-{{ item.id }}">
                                     {{ item.name }}
                                     <span class="badges">
-                                        {% if item.is_vegetarian %}<span class="badge veg">V</span>{% endif %}
-                                        {% if item.is_vegan %}<span class="badge vegan">VE</span>{% endif %}
-                                        {% if item.is_gluten_free %}<span class="badge gf">GF</span>{% endif %}
+                                        {% if item.is_vegetarian %}<span class="badge veg" title="Vegetarian"><span class="sr-text">Vegetarian</span>V</span>{% endif %}
+                                        {% if item.is_vegan %}<span class="badge vegan" title="Vegan"><span class="sr-text">Vegan</span>VE</span>{% endif %}
+                                        {% if item.is_gluten_free %}<span class="badge gf" title="Gluten Free"><span class="sr-text">Gluten Free</span>GF</span>{% endif %}
                                     </span>
                                 </h3>
                                 <p>{{ item.description }}</p>
                             </div>
-                            <div class="menu-item-price">£{{ item.price }}</div>
-                        </div>
+                            <div class="menu-item-price" aria-label="Price: £{{ item.price }}">£{{ item.price }}</div>
+                        </article>
                         {% empty %}
                         <p style="color: #999;">No items in this category yet.</p>
                         {% endfor %}
@@ -602,7 +649,7 @@
         {% endfor %}
         </div>
     {% else %}
-    <div class="empty-menu">
+    <div class="empty-menu" role="alert">
         <p>Our menu is being prepared. Please check back soon!</p>
     </div>
     {% endif %}
@@ -612,9 +659,29 @@
 {% block extra_js %}
 <script>
     function toggleCategory(header) {
-        const category = header.parentElement;
+        const category = header.closest('.menu-category');
+        const isExpanded = category.classList.contains('active');
+        
         category.classList.toggle('active');
+        header.setAttribute('aria-expanded', !isExpanded);
+        
+        // Announce change to screen readers
+        const categoryName = header.querySelector('h2').textContent.trim().split('(')[0].trim();
+        announceToScreenReader(`${categoryName} ${!isExpanded ? 'expanded' : 'collapsed'}`);
+        
         updateActiveNav();
+    }
+
+    // Screen reader announcements
+    function announceToScreenReader(message) {
+        const announcement = document.createElement('div');
+        announcement.setAttribute('role', 'status');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.setAttribute('aria-atomic', 'true');
+        announcement.className = 'sr-only';
+        announcement.textContent = message;
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
     }
 
     function updateActiveNav() {
@@ -627,7 +694,9 @@
             const rect = cat.getBoundingClientRect();
             if (!activeFound && rect.top < window.innerHeight / 2 && rect.bottom > 100) {
                 navBtns.forEach(b => b.classList.remove('active'));
-                navBtns[index].classList.add('active');
+                if (navBtns[index]) {
+                    navBtns[index].classList.add('active');
+                }
                 activeFound = true;
             }
         });
@@ -639,13 +708,18 @@
             const targetId = this.getAttribute('data-target');
             const targetCategory = document.getElementById(targetId);
             
+            if (!targetCategory) return;
+            
             // Open the target category
+            const header = targetCategory.querySelector('.category-header');
             if (!targetCategory.classList.contains('active')) {
                 targetCategory.classList.add('active');
+                header.setAttribute('aria-expanded', 'true');
             }
             
             // Scroll to it with offset for sticky nav
-            const navHeight = document.querySelector('.menu-nav-wrapper').offsetHeight + 80;
+            const navWrapper = document.querySelector('.menu-nav-wrapper');
+            const navHeight = (navWrapper ? navWrapper.offsetHeight : 0) + 80;
             const targetPosition = targetCategory.getBoundingClientRect().top + window.pageYOffset - navHeight;
             
             window.scrollTo({
@@ -656,11 +730,28 @@
             // Highlight active nav button
             document.querySelectorAll('.menu-nav-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+            
+            // Focus the category header for keyboard users
+            setTimeout(() => header.focus(), 500);
+        });
+    });
+
+    // Keyboard navigation for category headers
+    document.querySelectorAll('.category-header').forEach(header => {
+        header.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleCategory(this);
+            }
         });
     });
 
     // Update active nav on scroll
-    window.addEventListener('scroll', updateActiveNav);
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveNav, 100);
+    });
     
     // Initial call
     updateActiveNav();
