@@ -91,6 +91,9 @@
     .hours {
         padding: 5rem 5%;
         text-align: center;
+        position: relative;
+        background: linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.9)),
+                    url('https://images.unsplash.com/photo-1513618827672-0d7c5ad591b1?w=1920') center/cover no-repeat fixed;
     }
 
     .hours h2 {
@@ -100,15 +103,30 @@
     }
 
     .hours-content {
-        max-width: 400px;
+        max-width: 500px;
         margin: 0 auto;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 2rem 3rem;
+        border-radius: 15px;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(212, 175, 55, 0.2);
     }
 
     .hours-content p {
         font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #333;
+        margin-bottom: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        color: #f5f5f5;
+    }
+
+    .hours-content p:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .hours-content strong {
+        color: #d4af37;
     }
 
     /* Responsive */
