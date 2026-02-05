@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Django Restaurant - Experience exquisite dining with fine cuisine, expert chefs, and elegant ambiance. Book your table online.">
+    <meta name="theme-color" content="#1a1a1a">
     <title>{% block title %}Django Restaurant{% endblock %}</title>
     <style>
         * {
@@ -11,20 +13,63 @@
             box-sizing: border-box;
         }
 
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
         body {
             font-family: 'Georgia', serif;
             background-color: #1a1a1a;
             color: #f5f5f5;
             min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Skip Link for Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 0.75rem 1.5rem;
+            z-index: 10000;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 0 0 5px 0;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Focus Styles for Accessibility */
+        *:focus {
+            outline: 3px solid #d4af37;
+            outline-offset: 2px;
+        }
+
+        *:focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        *:focus-visible {
+            outline: 3px solid #d4af37;
+            outline-offset: 2px;
         }
 
         /* Navigation */
-        nav {
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem 5%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
             position: fixed;
             width: 100%;
             top: 0;
@@ -36,6 +81,42 @@
             font-weight: bold;
             color: #d4af37;
             text-decoration: none;
+        }
+
+        .logo:hover, .logo:focus {
+            color: #f0d078;
+        }
+
+        /* Mobile Menu Toggle */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background-color: #d4af37;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
         }
 
         .nav-links {
@@ -50,9 +131,11 @@
             text-decoration: none;
             font-size: 1rem;
             transition: color 0.3s ease;
+            padding: 0.5rem;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a:focus {
             color: #d4af37;
         }
 
@@ -64,7 +147,8 @@
             font-weight: bold;
         }
 
-        .nav-btn:hover {
+        .nav-btn:hover,
+        .nav-btn:focus {
             background-color: #b8960c;
             color: #1a1a1a;
         }
@@ -88,9 +172,12 @@
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
+            min-height: 44px;
+            min-width: 44px;
         }
 
-        .btn:hover {
+        .btn:hover,
+        .btn:focus {
             background-color: #b8960c;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
@@ -102,7 +189,8 @@
             color: #d4af37;
         }
 
-        .btn-outline:hover {
+        .btn-outline:hover,
+        .btn-outline:focus {
             background-color: #d4af37;
             color: #1a1a1a;
         }
@@ -122,16 +210,18 @@
         .form-input {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid #444;
+            border: 2px solid #444;
             border-radius: 5px;
             background-color: #2a2a2a;
             color: #f5f5f5;
             font-size: 1rem;
+            min-height: 44px;
         }
 
         .form-input:focus {
             outline: none;
             border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
         }
 
         /* Footer */
@@ -172,51 +262,181 @@
             color: #ee9090;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 900px) {
+            .nav-toggle {
+                display: block;
+            }
+
             .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 5rem 2rem 2rem;
                 gap: 1rem;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
             }
 
             .nav-links a {
-                font-size: 0.9rem;
+                display: block;
+                padding: 1rem;
+                font-size: 1.1rem;
+                border-bottom: 1px solid #333;
+            }
+
+            .nav-btn {
+                text-align: center;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .btn {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            main {
+                padding-top: 70px;
+            }
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            .btn {
+                border: 2px solid #000;
+            }
+
+            .form-input {
+                border: 2px solid #fff;
             }
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <a href="{% url 'index' %}" class="logo">Django Restaurant</a>
-        <ul class="nav-links">
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'menu' %}">Menu</a></li>
-            <li><a href="{% url 'booking' %}">Book a Table</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'my_bookings' %}">My Bookings</a></li>
-                <li><a href="{% url 'logout' %}" class="nav-btn">Logout</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}" class="nav-btn">Login</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+    <!-- Skip Link for Keyboard/Screen Reader Users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <a href="{% url 'index' %}" class="logo" aria-label="Django Restaurant - Home">Django Restaurant</a>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-menu" role="menubar">
+                <li role="none"><a href="{% url 'index' %}" role="menuitem">Home</a></li>
+                <li role="none"><a href="{% url 'menu' %}" role="menuitem">Menu</a></li>
+                <li role="none"><a href="{% url 'booking' %}" role="menuitem">Book a Table</a></li>
+                <li role="none"><a href="{% url 'about' %}" role="menuitem">About</a></li>
+                {% if user.is_authenticated %}
+                    <li role="none"><a href="{% url 'my_bookings' %}" role="menuitem">My Bookings</a></li>
+                    <li role="none"><a href="{% url 'logout' %}" class="nav-btn" role="menuitem">Logout</a></li>
+                {% else %}
+                    <li role="none"><a href="{% url 'login' %}" class="nav-btn" role="menuitem">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
 
     {% if messages %}
-    <div class="messages">
+    <div class="messages" role="alert" aria-live="polite">
         {% for message in messages %}
             <div class="message {{ message.tags }}">{{ message }}</div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <main>
+    <main id="main-content" role="main">
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <p>&copy; 2026 Django Restaurant. All rights reserved. | <a href="{% url 'admin:index' %}">Staff Login</a></p>
     </footer>
+
+    <!-- Mobile Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.querySelector('.nav-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (navToggle && navLinks) {
+                navToggle.addEventListener('click', function() {
+                    const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+                    navToggle.setAttribute('aria-expanded', !isExpanded);
+                    navLinks.classList.toggle('active');
+                    
+                    // Trap focus in mobile menu when open
+                    if (!isExpanded) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
+                });
+
+                // Close menu on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                        navToggle.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('active');
+                        document.body.style.overflow = '';
+                        navToggle.focus();
+                    }
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (navLinks.classList.contains('active') && 
+                        !navLinks.contains(e.target) && 
+                        !navToggle.contains(e.target)) {
+                        navToggle.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>
