@@ -13,16 +13,17 @@
     }
 
     .about-hero h1 {
-        font-size: 3rem;
+        font-size: clamp(2rem, 6vw, 3rem);
         color: #d4af37;
         margin-bottom: 1rem;
     }
 
     .about-hero p {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
         color: #ccc;
         max-width: 600px;
         margin: 0 auto;
+        line-height: 1.6;
     }
 
     /* Contact & Map Section */
@@ -54,7 +55,7 @@
 
     .contact-info h2 {
         color: #d4af37;
-        font-size: 2rem;
+        font-size: clamp(1.5rem, 4vw, 2rem);
         margin-bottom: 2rem;
     }
 
@@ -67,8 +68,8 @@
 
     .info-item .icon {
         font-size: 1.5rem;
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         background: rgba(212, 175, 55, 0.1);
         border-radius: 50%;
         display: flex;
@@ -86,16 +87,19 @@
     .info-item .details p {
         color: #999;
         font-size: 0.95rem;
-        line-height: 1.5;
+        line-height: 1.6;
     }
 
     .info-item .details a {
         color: #d4af37;
         text-decoration: none;
+        transition: color 0.3s ease;
     }
 
-    .info-item .details a:hover {
+    .info-item .details a:hover,
+    .info-item .details a:focus {
         text-decoration: underline;
+        color: #f0d078;
     }
 
     /* Social Links */
@@ -117,16 +121,29 @@
         font-size: 1.3rem;
         transition: all 0.3s ease;
         border: 2px solid #333;
+        min-width: 44px;
+        min-height: 44px;
     }
 
-    .social-link:hover {
+    .social-link:hover,
+    .social-link:focus {
         transform: translateY(-3px);
         border-color: #d4af37;
     }
 
-    .social-link.twitter:hover { background: #1da1f2; }
-    .social-link.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-    .social-link.facebook:hover { background: #1877f2; }
+    @media (prefers-reduced-motion: reduce) {
+        .social-link:hover,
+        .social-link:focus {
+            transform: none;
+        }
+    }
+
+    .social-link.twitter:hover,
+    .social-link.twitter:focus { background: #1da1f2; }
+    .social-link.instagram:hover,
+    .social-link.instagram:focus { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .social-link.facebook:hover,
+    .social-link.facebook:focus { background: #1877f2; }
 
     /* Social Feed Section */
     .social-feed-section {
@@ -137,22 +154,23 @@
     .social-feed-section h2 {
         text-align: center;
         color: #d4af37;
-        font-size: 2.2rem;
+        font-size: clamp(1.5rem, 4vw, 2.2rem);
         margin-bottom: 0.5rem;
     }
 
     .social-feed-section .subtitle {
         text-align: center;
         color: #888;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
 
     /* Feed Tabs */
     .feed-tabs {
         display: flex;
         justify-content: center;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
     }
 
     .feed-tab {
@@ -168,9 +186,12 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        min-height: 44px;
     }
 
-    .feed-tab:hover, .feed-tab.active {
+    .feed-tab:hover,
+    .feed-tab:focus,
+    .feed-tab.active {
         border-color: #d4af37;
         color: #d4af37;
     }
@@ -195,9 +216,13 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .feed-post:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    @media (prefers-reduced-motion: no-preference) {
+        .feed-post:hover,
+        .feed-post:focus-within {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+    }
     }
 
     .post-header {
@@ -218,10 +243,12 @@
         justify-content: center;
         font-weight: bold;
         color: #1a1a1a;
+        flex-shrink: 0;
     }
 
     .post-user {
         flex: 1;
+        min-width: 0;
     }
 
     .post-user .name {
@@ -233,10 +260,14 @@
     .post-user .handle {
         color: #888;
         font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .post-platform {
         font-size: 1.2rem;
+        flex-shrink: 0;
     }
 
     .post-image {
@@ -252,7 +283,7 @@
     .post-content p {
         color: #ccc;
         font-size: 0.95rem;
-        line-height: 1.5;
+        line-height: 1.6;
         margin-bottom: 0.75rem;
     }
 
@@ -268,6 +299,7 @@
         border-top: 1px solid #333;
         color: #888;
         font-size: 0.85rem;
+        flex-wrap: wrap;
     }
 
     .post-stats span {
@@ -285,7 +317,7 @@
         display: block;
     }
 
-    /* Responsive */
+    /* Responsive - Tablet */
     @media (max-width: 900px) {
         .contact-section {
             grid-template-columns: 1fr;
@@ -293,6 +325,12 @@
 
         .map-container {
             min-height: 300px;
+            order: 2;
+        }
+
+        .contact-info {
+            order: 1;
+            padding: 2rem;
         }
 
         .social-feed {
@@ -300,17 +338,53 @@
         }
     }
 
+    /* Responsive - Mobile */
     @media (max-width: 600px) {
-        .about-hero h1 {
-            font-size: 2rem;
+        .about-hero {
+            padding: 3rem 5%;
         }
 
         .social-feed {
             grid-template-columns: 1fr;
         }
 
-        .feed-tabs {
+        .social-feed-section {
+            padding: 3rem 4%;
+        }
+
+        .feed-tab {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .contact-info {
+            padding: 1.5rem;
+        }
+
+        .info-item {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-item .icon {
+            width: 36px;
+            height: 36px;
+            font-size: 1.2rem;
+        }
+
+        .social-links {
             flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .feed-tabs {
+            gap: 0.5rem;
+        }
+
+        .feed-tab {
+            flex: 1 1 45%;
+            justify-content: center;
         }
     }
 </style>
@@ -318,86 +392,96 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="about-hero">
-    <h1>About Django Restaurant</h1>
+<section class="about-hero" aria-labelledby="about-heading">
+    <h1 id="about-heading">About Django Restaurant</h1>
     <p>Where culinary excellence meets warm hospitality. Serving the community since 2020 with passion and dedication.</p>
 </section>
 
 <!-- Contact & Map Section -->
-<section class="contact-section">
+<section class="contact-section" aria-label="Contact information and location">
     <div class="map-container">
         <iframe 
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2483.541!2d-0.1276!3d51.5074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDMwJzI2LjYiTiAwwrAwNyc0MC40Ilc!5e0!3m2!1sen!2suk!4v1"
             loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Django Restaurant location on Google Maps"
+            aria-label="Map showing Django Restaurant location in London">
         </iframe>
     </div>
     <div class="contact-info">
-        <h2>Find Us</h2>
+        <h2 id="contact-heading">Find Us</h2>
         
-        <div class="info-item">
-            <div class="icon">📍</div>
-            <div class="details">
-                <h3>Address</h3>
-                <p>123 Culinary Street<br>London, EC1A 1BB<br>United Kingdom</p>
+        <address>
+            <div class="info-item">
+                <div class="icon" role="img" aria-hidden="true">📍</div>
+                <div class="details">
+                    <h3>Address</h3>
+                    <p>123 Culinary Street<br>London, EC1A 1BB<br>United Kingdom</p>
+                </div>
             </div>
-        </div>
 
-        <div class="info-item">
-            <div class="icon">🕐</div>
-            <div class="details">
-                <h3>Opening Hours</h3>
-                <p>Monday - Friday: 12:00 PM - 10:00 PM<br>Saturday - Sunday: 11:00 AM - 11:00 PM</p>
+            <div class="info-item">
+                <div class="icon" role="img" aria-hidden="true">🕐</div>
+                <div class="details">
+                    <h3>Opening Hours</h3>
+                    <p>Monday - Friday: <time>12:00 PM</time> - <time>10:00 PM</time><br>Saturday - Sunday: <time>11:00 AM</time> - <time>11:00 PM</time></p>
+                </div>
             </div>
-        </div>
 
-        <div class="info-item">
-            <div class="icon">📞</div>
-            <div class="details">
-                <h3>Contact</h3>
-                <p>Phone: <a href="tel:+442012345678">+44 20 1234 5678</a><br>
-                   Email: <a href="mailto:hello@djangorestaurant.com">hello@djangorestaurant.com</a></p>
+            <div class="info-item">
+                <div class="icon" role="img" aria-hidden="true">📞</div>
+                <div class="details">
+                    <h3>Contact</h3>
+                    <p>Phone: <a href="tel:+442012345678" aria-label="Call us at +44 20 1234 5678">+44 20 1234 5678</a><br>
+                       Email: <a href="mailto:hello@djangorestaurant.com" aria-label="Email us at hello@djangorestaurant.com">hello@djangorestaurant.com</a></p>
+                </div>
             </div>
-        </div>
+        </address>
 
-        <div class="social-links">
-            <a href="https://x.com/djangorestaurant" target="_blank" class="social-link twitter" title="Follow us on X">𝕏</a>
-            <a href="https://instagram.com/djangorestaurant" target="_blank" class="social-link instagram" title="Follow us on Instagram">📷</a>
-            <a href="https://facebook.com/djangorestaurant" target="_blank" class="social-link facebook" title="Follow us on Facebook">f</a>
-        </div>
+        <nav class="social-links" aria-label="Social media links">
+            <a href="https://x.com/djangorestaurant" target="_blank" rel="noopener noreferrer" class="social-link twitter" aria-label="Follow us on X (formerly Twitter)">
+                <span aria-hidden="true">𝕏</span>
+            </a>
+            <a href="https://instagram.com/djangorestaurant" target="_blank" rel="noopener noreferrer" class="social-link instagram" aria-label="Follow us on Instagram">
+                <span aria-hidden="true">📷</span>
+            </a>
+            <a href="https://facebook.com/djangorestaurant" target="_blank" rel="noopener noreferrer" class="social-link facebook" aria-label="Follow us on Facebook">
+                <span aria-hidden="true">f</span>
+            </a>
+        </nav>
     </div>
 </section>
 
 <!-- Social Feed Section -->
-<section class="social-feed-section">
-    <h2>Follow Our Journey</h2>
+<section class="social-feed-section" aria-labelledby="social-heading">
+    <h2 id="social-heading">Follow Our Journey</h2>
     <p class="subtitle">See what's happening at Django Restaurant across our social channels</p>
 
-    <div class="feed-tabs">
-        <button class="feed-tab active" data-filter="all">
+    <div class="feed-tabs" role="tablist" aria-label="Filter social media posts by platform">
+        <button class="feed-tab active" role="tab" aria-selected="true" data-filter="all" id="tab-all" aria-controls="socialFeed">
             🌐 All Posts
         </button>
-        <button class="feed-tab" data-filter="twitter">
+        <button class="feed-tab" role="tab" aria-selected="false" data-filter="twitter" id="tab-twitter" aria-controls="socialFeed">
             𝕏 X / Twitter
         </button>
-        <button class="feed-tab" data-filter="instagram">
+        <button class="feed-tab" role="tab" aria-selected="false" data-filter="instagram" id="tab-instagram" aria-controls="socialFeed">
             📷 Instagram
         </button>
-        <button class="feed-tab" data-filter="facebook">
+        <button class="feed-tab" role="tab" aria-selected="false" data-filter="facebook" id="tab-facebook" aria-controls="socialFeed">
             📘 Facebook
         </button>
     </div>
 
-    <div class="social-feed" id="socialFeed">
+    <div class="social-feed" id="socialFeed" role="feed" aria-label="Social media posts" aria-live="polite">
         <!-- Twitter/X Posts -->
-        <article class="feed-post visible" data-platform="twitter">
+        <article class="feed-post visible" data-platform="twitter" aria-label="X post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">@djangorestaurant</div>
                 </div>
-                <span class="post-platform">𝕏</span>
+                <span class="post-platform" aria-label="Posted on X">𝕏</span>
             </div>
             <div class="post-content">
                 <p>New seasonal menu dropping next week! 🍂 Our chefs have been working on some incredible autumn-inspired dishes. Stay tuned for the big reveal! #DjangoRestaurant #FineDining</p>
@@ -410,165 +494,165 @@
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="instagram">
+        <article class="feed-post visible" data-platform="instagram" aria-label="Instagram post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">@djangorestaurant</div>
                 </div>
-                <span class="post-platform">📷</span>
+                <span class="post-platform" aria-label="Posted on Instagram">📷</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600" alt="Gourmet dish" class="post-image">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600" alt="Gourmet pan-seared duck with cherry reduction on white plate" class="post-image" loading="lazy">
             <div class="post-content">
                 <p>Our signature Pan-Seared Duck with Cherry Reduction 🍒✨ A masterpiece by Chef Marcus. #FoodArt #Gastronomy</p>
-                <span class="post-date">Feb 2, 2026</span>
+                <span class="post-date"><time datetime="2026-02-02">Feb 2, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>❤️ 1,247</span>
-                <span>💬 89</span>
+            <div class="post-stats" aria-label="Engagement: 1247 likes, 89 comments">
+                <span aria-hidden="true">❤️ 1,247</span>
+                <span aria-hidden="true">💬 89</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="facebook">
+        <article class="feed-post visible" data-platform="facebook" aria-label="Facebook post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">Django Restaurant Official</div>
                 </div>
-                <span class="post-platform">📘</span>
+                <span class="post-platform" aria-label="Posted on Facebook">📘</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600" alt="Restaurant interior" class="post-image">
+            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600" alt="Elegant restaurant interior with candlelit tables" class="post-image" loading="lazy">
             <div class="post-content">
                 <p>We're thrilled to announce our Valentine's Day Special Menu! 💕 Book now for an unforgettable romantic evening with your loved one.</p>
-                <span class="post-date">Feb 1, 2026</span>
+                <span class="post-date"><time datetime="2026-02-01">Feb 1, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>👍 456</span>
-                <span>💬 67</span>
-                <span>↗️ 123</span>
+            <div class="post-stats" aria-label="Engagement: 456 likes, 67 comments, 123 shares">
+                <span aria-hidden="true">👍 456</span>
+                <span aria-hidden="true">💬 67</span>
+                <span aria-hidden="true">↗️ 123</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="instagram">
+        <article class="feed-post visible" data-platform="instagram" aria-label="Instagram post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">@djangorestaurant</div>
                 </div>
-                <span class="post-platform">📷</span>
+                <span class="post-platform" aria-label="Posted on Instagram">📷</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600" alt="Chef at work" class="post-image">
+            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600" alt="Chef carefully plating a dish in professional kitchen" class="post-image" loading="lazy">
             <div class="post-content">
                 <p>Behind the scenes magic ✨ Watch our team prepare for tonight's service. Every dish is crafted with love! #KitchenLife</p>
-                <span class="post-date">Jan 30, 2026</span>
+                <span class="post-date"><time datetime="2026-01-30">Jan 30, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>❤️ 892</span>
-                <span>💬 54</span>
+            <div class="post-stats" aria-label="Engagement: 892 likes, 54 comments">
+                <span aria-hidden="true">❤️ 892</span>
+                <span aria-hidden="true">💬 54</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="twitter">
+        <article class="feed-post visible" data-platform="twitter" aria-label="X post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">@djangorestaurant</div>
                 </div>
-                <span class="post-platform">𝕏</span>
+                <span class="post-platform" aria-label="Posted on X">𝕏</span>
             </div>
             <div class="post-content">
                 <p>Thank you for voting us "Best New Restaurant 2025" in the London Food Awards! 🏆 This means everything to our team. We're just getting started! 🙏</p>
-                <span class="post-date">Jan 28, 2026</span>
+                <span class="post-date"><time datetime="2026-01-28">Jan 28, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>❤️ 1,456</span>
-                <span>🔁 234</span>
-                <span>💬 89</span>
+            <div class="post-stats" aria-label="Engagement: 1456 likes, 234 retweets, 89 replies">
+                <span aria-hidden="true">❤️ 1,456</span>
+                <span aria-hidden="true">🔁 234</span>
+                <span aria-hidden="true">💬 89</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="facebook">
+        <article class="feed-post visible" data-platform="facebook" aria-label="Facebook post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">Django Restaurant Official</div>
                 </div>
-                <span class="post-platform">📘</span>
+                <span class="post-platform" aria-label="Posted on Facebook">📘</span>
             </div>
             <div class="post-content">
                 <p>📣 ANNOUNCEMENT: We're now open for Sunday Brunch! Join us from 11 AM for bottomless mimosas and our new brunch menu. Reservations recommended!</p>
-                <span class="post-date">Jan 25, 2026</span>
+                <span class="post-date"><time datetime="2026-01-25">Jan 25, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>👍 789</span>
-                <span>💬 156</span>
-                <span>↗️ 234</span>
+            <div class="post-stats" aria-label="Engagement: 789 likes, 156 comments, 234 shares">
+                <span aria-hidden="true">👍 789</span>
+                <span aria-hidden="true">💬 156</span>
+                <span aria-hidden="true">↗️ 234</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="instagram">
+        <article class="feed-post visible" data-platform="instagram" aria-label="Instagram post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">@djangorestaurant</div>
                 </div>
-                <span class="post-platform">📷</span>
+                <span class="post-platform" aria-label="Posted on Instagram">📷</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600" alt="Pizza" class="post-image">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600" alt="Wood-fired artisan pizza with fresh toppings" class="post-image" loading="lazy">
             <div class="post-content">
                 <p>Wood-fired perfection 🔥🍕 Our artisan pizzas are made with 72-hour fermented dough and the finest ingredients. #Foodie #PizzaLove</p>
-                <span class="post-date">Jan 22, 2026</span>
+                <span class="post-date"><time datetime="2026-01-22">Jan 22, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>❤️ 2,103</span>
-                <span>💬 167</span>
+            <div class="post-stats" aria-label="Engagement: 2103 likes, 167 comments">
+                <span aria-hidden="true">❤️ 2,103</span>
+                <span aria-hidden="true">💬 167</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="twitter">
+        <article class="feed-post visible" data-platform="twitter" aria-label="X post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">@djangorestaurant</div>
                 </div>
-                <span class="post-platform">𝕏</span>
+                <span class="post-platform" aria-label="Posted on X">𝕏</span>
             </div>
             <div class="post-content">
                 <p>The secret ingredient is always love ❤️ And maybe a little truffle oil 😉 #ChefSecrets #FoodQuotes</p>
-                <span class="post-date">Jan 20, 2026</span>
+                <span class="post-date"><time datetime="2026-01-20">Jan 20, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>❤️ 567</span>
-                <span>🔁 89</span>
-                <span>💬 34</span>
+            <div class="post-stats" aria-label="Engagement: 567 likes, 89 retweets, 34 replies">
+                <span aria-hidden="true">❤️ 567</span>
+                <span aria-hidden="true">🔁 89</span>
+                <span aria-hidden="true">💬 34</span>
             </div>
         </article>
 
-        <article class="feed-post visible" data-platform="facebook">
+        <article class="feed-post visible" data-platform="facebook" aria-label="Facebook post from Django Restaurant">
             <div class="post-header">
-                <div class="post-avatar">DR</div>
+                <div class="post-avatar" aria-hidden="true">DR</div>
                 <div class="post-user">
                     <div class="name">Django Restaurant</div>
                     <div class="handle">Django Restaurant Official</div>
                 </div>
-                <span class="post-platform">📘</span>
+                <span class="post-platform" aria-label="Posted on Facebook">📘</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600" alt="Steak" class="post-image">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600" alt="Perfectly grilled 28-day aged ribeye steak with bone marrow butter" class="post-image" loading="lazy">
             <div class="post-content">
                 <p>Our 28-day dry-aged ribeye is back on the menu! 🥩 Cooked to perfection and served with our signature bone marrow butter. Limited availability each night.</p>
-                <span class="post-date">Jan 18, 2026</span>
+                <span class="post-date"><time datetime="2026-01-18">Jan 18, 2026</time></span>
             </div>
-            <div class="post-stats">
-                <span>👍 1,234</span>
-                <span>💬 198</span>
-                <span>↗️ 345</span>
+            <div class="post-stats" aria-label="Engagement: 1234 likes, 198 comments, 345 shares">
+                <span aria-hidden="true">👍 1,234</span>
+                <span aria-hidden="true">💬 198</span>
+                <span aria-hidden="true">↗️ 345</span>
             </div>
         </article>
     </div>
@@ -577,27 +661,104 @@
 
 {% block extra_js %}
 <script>
-    // Tab filtering for social feed
+    // Screen reader announcement utility
+    function announceToScreenReader(message, priority = 'polite') {
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', priority);
+        announcement.setAttribute('aria-atomic', 'true');
+        announcement.setAttribute('class', 'sr-only');
+        announcement.textContent = message;
+        document.body.appendChild(announcement);
+        
+        setTimeout(() => {
+            document.body.removeChild(announcement);
+        }, 1000);
+    }
+
+    // Tab filtering for social feed with accessibility
     const tabs = document.querySelectorAll('.feed-tab');
     const posts = document.querySelectorAll('.feed-post');
+    const feedContainer = document.querySelector('.social-feed');
 
     tabs.forEach(tab => {
+        // Click handler
         tab.addEventListener('click', () => {
-            // Update active tab
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            const filter = tab.dataset.filter;
-
-            // Filter posts
-            posts.forEach(post => {
-                if (filter === 'all' || post.dataset.platform === filter) {
-                    post.classList.add('visible');
-                } else {
-                    post.classList.remove('visible');
-                }
-            });
+            activateTab(tab);
         });
+
+        // Keyboard navigation for tabs
+        tab.addEventListener('keydown', (e) => {
+            const tabArray = Array.from(tabs);
+            const currentIndex = tabArray.indexOf(tab);
+            let newIndex;
+
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    e.preventDefault();
+                    newIndex = (currentIndex + 1) % tabArray.length;
+                    tabArray[newIndex].focus();
+                    activateTab(tabArray[newIndex]);
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    newIndex = (currentIndex - 1 + tabArray.length) % tabArray.length;
+                    tabArray[newIndex].focus();
+                    activateTab(tabArray[newIndex]);
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    tabArray[0].focus();
+                    activateTab(tabArray[0]);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    tabArray[tabArray.length - 1].focus();
+                    activateTab(tabArray[tabArray.length - 1]);
+                    break;
+            }
+        });
+    });
+
+    function activateTab(tab) {
+        // Update ARIA states and active class
+        tabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+            t.setAttribute('tabindex', '-1');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        tab.setAttribute('tabindex', '0');
+
+        const filter = tab.dataset.filter;
+        let visibleCount = 0;
+
+        // Filter posts
+        posts.forEach(post => {
+            if (filter === 'all' || post.dataset.platform === filter) {
+                post.classList.add('visible');
+                visibleCount++;
+            } else {
+                post.classList.remove('visible');
+            }
+        });
+
+        // Announce to screen readers
+        const platformName = filter === 'all' ? 'all platforms' : 
+                            filter === 'twitter' ? 'X' : 
+                            filter.charAt(0).toUpperCase() + filter.slice(1);
+        announceToScreenReader(`Showing ${visibleCount} posts from ${platformName}`);
+    }
+
+    // Initialize tabindex for proper keyboard navigation
+    tabs.forEach((tab, index) => {
+        if (index === 0) {
+            tab.setAttribute('tabindex', '0');
+        } else {
+            tab.setAttribute('tabindex', '-1');
+        }
     });
 </script>
 {% endblock %}
