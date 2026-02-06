@@ -353,7 +353,7 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <header>
-        <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <nav class="navbar" aria-label="Main navigation">
             <a href="{% url 'index' %}" class="logo" aria-label="Django Restaurant - Home">Django Restaurant</a>
             
             <!-- Mobile Menu Toggle -->
@@ -386,11 +386,11 @@
     </div>
     {% endif %}
 
-    <main id="main-content" role="main">
+    <main id="main-content">
         {% block content %}{% endblock %}
     </main>
 
-    <footer role="contentinfo">
+    <footer>
         <p>&copy; 2026 Django Restaurant. All rights reserved. | <a href="{% url 'admin:index' %}">Staff Login</a></p>
     </footer>
 
