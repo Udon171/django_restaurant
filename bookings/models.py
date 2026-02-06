@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.mail import send_mail
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Table(models.Model):
@@ -114,12 +117,13 @@ please visit your account dashboard or contact us.
                 message,
                 settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@djangorestaurant.com',
                 [self.guest_email],
-                fail_silently=True,
+                fail_silently=False,
             )
             self.confirmation_sent = True
             self.save(update_fields=['confirmation_sent'])
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f'Failed to send confirmation email to {self.guest_email}: {e}')
             return False
 
     def send_update_email(self):
@@ -151,10 +155,11 @@ Django Restaurant Team
                 message,
                 settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@djangorestaurant.com',
                 [self.guest_email],
-                fail_silently=True,
+                fail_silently=False,
             )
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f'Failed to send update email to {self.guest_email}: {e}')
             return False
 
     def send_cancellation_email(self):
@@ -184,8 +189,9 @@ Django Restaurant Team
                 message,
                 settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@djangorestaurant.com',
                 [self.guest_email],
-                fail_silently=True,
+                fail_silently=False,
             )
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f'Failed to send cancellation email to {self.guest_email}: {e}')
             return False
