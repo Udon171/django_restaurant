@@ -544,22 +544,6 @@
         display: block;
     }
 
-    .booking-form-section.hidden {
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-        padding: 0;
-        margin: 0;
-        pointer-events: none;
-        transition: opacity 0.4s ease, max-height 0.5s ease 0.1s;
-    }
-
-    .booking-form-section {
-        opacity: 1;
-        max-height: 3000px;
-        transition: opacity 0.4s ease, max-height 0.5s ease;
-    }
-
     .form-errors ul {
         margin: 0;
         padding-left: 1.25rem;
@@ -573,6 +557,22 @@
     @media (max-width: 900px) {
         .booking-container {
             grid-template-columns: 1fr;
+        }
+
+        .booking-form-section {
+            opacity: 1;
+            max-height: 3000px;
+            transition: opacity 0.4s ease, max-height 0.5s ease;
+        }
+
+        .booking-form-section.hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease, max-height 0.5s ease 0.1s;
         }
 
         .table-animation-section {
@@ -854,9 +854,12 @@
         formErrors.classList.remove('visible');
         statusText.textContent = 'Preparing your table...';
 
-        // Hide the form section
+        // Hide the form section on tablet/mobile only (single-column layout)
         const formSection = document.querySelector('.booking-form-section');
-        formSection.classList.add('hidden');
+        const isMobile = window.matchMedia('(max-width: 900px)').matches;
+        if (isMobile) {
+            formSection.classList.add('hidden');
+        }
 
         // Start table rotation animation (if motion allowed)
         table3d.classList.add('rotating');
@@ -923,15 +926,25 @@
                     }
                     announceToScreenReader(announcement);
                     
-                    // Focus confirmation for keyboard users
+                    // On desktop: disable form inputs to show it's been submitted
+                    if (!isMobile) {
+                        form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = true);
+                    }
+
+                    // Focus/scroll to confirmation
                     confirmationSection.focus();
                     confirmationSection.setAttribute('tabindex', '-1');
+                    if (isMobile) {
+                        confirmationSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }, animationDelay + 1500);
 
             } else {
                 // Show errors - restore the form
                 table3d.classList.remove('rotating');
-                document.querySelector('.booking-form-section').classList.remove('hidden');
+                if (isMobile) {
+                    document.querySelector('.booking-form-section').classList.remove('hidden');
+                }
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Reserve Table';
                 submitBtn.setAttribute('aria-busy', 'false');
@@ -973,7 +986,9 @@
             }
         } catch (error) {
             table3d.classList.remove('rotating');
-            document.querySelector('.booking-form-section').classList.remove('hidden');
+            if (isMobile) {
+                document.querySelector('.booking-form-section').classList.remove('hidden');
+            }
             submitBtn.disabled = false;
             submitBtn.textContent = 'Reserve Table';
             submitBtn.setAttribute('aria-busy', 'false');
@@ -1025,8 +1040,9 @@
         statusText.textContent = 'Your table awaits...';
         formErrors.classList.remove('visible');
 
-        // Show form section again
+        // Show form section again (mobile) and re-enable inputs (desktop)
         document.querySelector('.booking-form-section').classList.remove('hidden');
+        form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = false);
 
         // Reset guest count display
         guestCountDisplay.textContent = '2';
