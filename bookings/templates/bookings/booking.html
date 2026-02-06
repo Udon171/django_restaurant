@@ -482,6 +482,28 @@
         text-decoration: underline;
     }
 
+    .book-again-btn {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.875rem 2rem;
+        background: linear-gradient(135deg, #d4af37 0%, #b8960c 100%);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        font-family: inherit;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        min-height: 44px;
+    }
+
+    .book-again-btn:hover,
+    .book-again-btn:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    }
+
     .booking-details {
         background: #242424;
         padding: 1rem 1.5rem;
@@ -761,6 +783,7 @@
                     <p><strong>Party:</strong> <span id="partySizeConfirm"></span> guests</p>
                 </div>
                 <p class="email-note">📧 Confirmation sent to <span id="emailConfirm"></span></p>
+                <button type="button" class="book-again-btn" id="bookAgainBtn">Book Another Table</button>
             </div>
         </section>
     </div>
@@ -971,5 +994,48 @@
         document.body.appendChild(announcement);
         setTimeout(() => announcement.remove(), 1000);
     }
+
+    // Book Another Table - reset everything
+    document.getElementById('bookAgainBtn').addEventListener('click', function() {
+        // Reset form fields (keep name/email/phone for logged-in users)
+        const keepName = document.getElementById('id_guest_name').defaultValue;
+        const keepEmail = document.getElementById('id_guest_email').defaultValue;
+        const keepPhone = document.getElementById('id_guest_phone').defaultValue;
+        form.reset();
+        document.getElementById('id_guest_name').value = keepName;
+        document.getElementById('id_guest_email').value = keepEmail;
+        document.getElementById('id_guest_phone').value = keepPhone;
+        document.getElementById('id_party_size').value = '2';
+
+        // Reset table animation
+        table3d.classList.remove('rotating');
+        tableCloth.classList.remove('visible');
+        placeSettings.classList.remove('visible');
+
+        // Reset confirmation
+        confirmationSection.classList.remove('visible');
+        checkmark.classList.remove('animate');
+        // Remove any dynamically added account-created notes
+        confirmationSection.querySelectorAll('.account-created-note').forEach(el => el.remove());
+
+        // Reset button and status
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Reserve Table';
+        submitBtn.setAttribute('aria-busy', 'false');
+        statusText.textContent = 'Your table awaits...';
+        formErrors.classList.remove('visible');
+
+        // Show form section again
+        document.querySelector('.booking-form-section').classList.remove('hidden');
+
+        // Reset guest count display
+        guestCountDisplay.textContent = '2';
+        guestCountDisplay.setAttribute('aria-label', '2 guests');
+
+        // Scroll to top of form
+        document.querySelector('.booking-page').scrollIntoView({ behavior: 'smooth' });
+
+        announceToScreenReader('Booking form reset. You can make another reservation.');
+    });
 </script>
 {% endblock %}

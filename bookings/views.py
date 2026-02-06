@@ -12,7 +12,15 @@ import json
 
 def booking_page(request):
     """Display the booking page."""
-    form = BookingForm()
+    initial = {}
+    if request.user.is_authenticated:
+        initial['guest_name'] = f'{request.user.first_name} {request.user.last_name}'.strip()
+        initial['guest_email'] = request.user.email
+        # Try to get phone from most recent booking
+        last_booking = Booking.objects.filter(user=request.user).order_by('-created_at').first()
+        if last_booking:
+            initial['guest_phone'] = last_booking.guest_phone
+    form = BookingForm(initial=initial)
     return render(request, 'bookings/booking.html', {'form': form})
 
 
