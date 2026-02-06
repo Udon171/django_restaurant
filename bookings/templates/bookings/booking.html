@@ -522,6 +522,22 @@
         display: block;
     }
 
+    .booking-form-section.hidden {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease, max-height 0.5s ease 0.1s;
+    }
+
+    .booking-form-section {
+        opacity: 1;
+        max-height: 3000px;
+        transition: opacity 0.4s ease, max-height 0.5s ease;
+    }
+
     .form-errors ul {
         margin: 0;
         padding-left: 1.25rem;
@@ -815,6 +831,10 @@
         formErrors.classList.remove('visible');
         statusText.textContent = 'Preparing your table...';
 
+        // Hide the form section
+        const formSection = document.querySelector('.booking-form-section');
+        formSection.classList.add('hidden');
+
         // Start table rotation animation (if motion allowed)
         table3d.classList.add('rotating');
 
@@ -886,8 +906,9 @@
                 }, animationDelay + 1500);
 
             } else {
-                // Show errors
+                // Show errors - restore the form
                 table3d.classList.remove('rotating');
+                document.querySelector('.booking-form-section').classList.remove('hidden');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Reserve Table';
                 submitBtn.setAttribute('aria-busy', 'false');
@@ -929,6 +950,7 @@
             }
         } catch (error) {
             table3d.classList.remove('rotating');
+            document.querySelector('.booking-form-section').classList.remove('hidden');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Reserve Table';
             submitBtn.setAttribute('aria-busy', 'false');
