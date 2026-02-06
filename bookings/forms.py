@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from .models import Booking
-from datetime import date, time
+from datetime import date, time, datetime
 
 
 class BookingForm(forms.ModelForm):
@@ -25,7 +25,11 @@ class BookingForm(forms.ModelForm):
         ('21:00', '9:00 PM'),
     ]
     
-    time = forms.ChoiceField(choices=TIME_CHOICES, widget=forms.Select(attrs={'class': 'form-input'}))
+    time = forms.TypedChoiceField(
+        choices=TIME_CHOICES,
+        coerce=lambda x: datetime.strptime(x, '%H:%M').time(),
+        widget=forms.Select(attrs={'class': 'form-input'})
+    )
     
     # Account creation fields
     create_account = forms.BooleanField(
@@ -107,6 +111,8 @@ class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['special_requests'].required = False
+        # Refresh date min to today on every form instantiation
+        self.fields['date'].widget.attrs['min'] = date.today().isoformat()
 
     def clean(self):
         cleaned_data = super().clean()

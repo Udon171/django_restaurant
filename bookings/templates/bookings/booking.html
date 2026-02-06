@@ -828,7 +828,13 @@
                 }
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                console.error('Server returned non-JSON response:', response.status);
+                throw new Error('Server error (' + response.status + '). Please try again.');
+            }
 
             if (data.success) {
                 const animationDelay = prefersReducedMotion ? 500 : 1500;
@@ -886,12 +892,27 @@
                 submitBtn.textContent = 'Reserve Table';
                 submitBtn.setAttribute('aria-busy', 'false');
                 statusText.textContent = 'Please check your details';
+                console.log('Booking validation errors:', data.errors);
                 
+                const fieldLabels = {
+                    'guest_name': 'Name',
+                    'guest_email': 'Email',
+                    'guest_phone': 'Phone',
+                    'date': 'Date',
+                    'time': 'Time',
+                    'party_size': 'Party Size',
+                    'special_requests': 'Special Requests',
+                    'password': 'Password',
+                    'password_confirm': 'Confirm Password',
+                    '__all__': ''
+                };
                 let errorHtml = '<ul role="list">';
                 let errorMessages = [];
                 for (const [field, errors] of Object.entries(data.errors)) {
+                    const label = fieldLabels[field] || field;
                     errors.forEach(error => {
-                        errorHtml += `<li>${error}</li>`;
+                        const prefix = label ? `<strong>${label}:</strong> ` : '';
+                        errorHtml += `<li>${prefix}${error}</li>`;
                         errorMessages.push(error);
                     });
                 }
