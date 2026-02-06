@@ -149,10 +149,11 @@ EMAIL_HOST = 'smtp.resend.com'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'resend'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'Django Restaurant noreply@djangorestaurant.com'
 
 # Authentication settings
 LOGIN_REDIRECT_URL = 'my_bookings'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
