@@ -1,19 +1,29 @@
 {% extends 'base.html' %}
 
-{% block title %}My Bookings | Django Restaurant{% endblock %}
+{% block title %}My Reservations | Django Restaurant{% endblock %}
 
 {% block extra_css %}
 <style>
-    .my-bookings {
+    .my-bookings-page {
         padding: 3rem 5%;
         max-width: 1000px;
         margin: 0 auto;
+        min-height: calc(100vh - 160px);
     }
 
-    .my-bookings h1 {
-        font-size: 2.5rem;
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .page-header h1 {
+        font-size: clamp(2rem, 5vw, 2.5rem);
         color: #d4af37;
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+        color: #999;
     }
 
     .bookings-list {
@@ -24,104 +34,267 @@
 
     .booking-card {
         background-color: #242424;
+        border-radius: 12px;
         padding: 1.5rem;
-        border-radius: 10px;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr auto;
+        border: 1px solid #333;
+        transition: border-color 0.3s ease;
+    }
+
+    .booking-card:hover {
+        border-color: #d4af37;
+    }
+
+    .booking-card.cancelled {
+        opacity: 0.6;
+    }
+
+    .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
         gap: 1rem;
-        align-items: center;
     }
 
-    .booking-card .date-time h3 {
+    .booking-date-time {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .booking-date {
+        font-size: 1.3rem;
+        color: #f5f5f5;
+        font-weight: bold;
+    }
+
+    .booking-time {
         color: #d4af37;
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 
-    .booking-card .date-time p {
-        color: #999;
-    }
-
-    .booking-card .details p {
-        color: #ccc;
-    }
-
-    .status {
-        padding: 0.5rem 1rem;
+    .status-badge {
+        padding: 0.4rem 1rem;
         border-radius: 20px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: bold;
         text-transform: uppercase;
     }
 
-    .status.pending {
-        background-color: #8b6914;
-        color: #fff;
-    }
-
-    .status.confirmed {
+    .status-confirmed {
         background-color: #2d5a2d;
         color: #90ee90;
     }
 
-    .status.cancelled {
+    .status-pending {
+        background-color: #5a5a2d;
+        color: #eeee90;
+    }
+
+    .status-cancelled {
         background-color: #5a2d2d;
         color: #ee9090;
     }
 
-    .status.completed {
+    .status-completed {
         background-color: #2d4a5a;
-        color: #90c0ee;
+        color: #90d0ee;
+    }
+
+    .booking-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background-color: #1a1a1a;
+        border-radius: 8px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-label {
+        font-size: 0.8rem;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        color: #f5f5f5;
+        font-size: 1rem;
+    }
+
+    .special-requests {
+        padding: 1rem;
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 3px solid #d4af37;
+    }
+
+    .special-requests h4 {
+        color: #d4af37;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+
+    .special-requests p {
+        color: #ccc;
+        margin: 0;
+    }
+
+    .booking-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit {
+        padding: 0.6rem 1.5rem;
+        background-color: #d4af37;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-edit:hover,
+    .btn-edit:focus {
+        background-color: #b8960c;
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        padding: 0.6rem 1.5rem;
+        background-color: transparent;
+        color: #ee9090;
+        border: 2px solid #ee9090;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 44px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .btn-cancel:hover,
+    .btn-cancel:focus {
+        background-color: #5a2d2d;
     }
 
     .no-bookings {
         text-align: center;
-        padding: 3rem;
+        padding: 4rem 2rem;
         background-color: #242424;
-        border-radius: 10px;
+        border-radius: 12px;
+    }
+
+    .no-bookings h2 {
+        color: #d4af37;
+        margin-bottom: 1rem;
     }
 
     .no-bookings p {
         color: #999;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    @media (max-width: 768px) {
-        .booking-card {
-            grid-template-columns: 1fr;
-            text-align: center;
+    /* Responsive */
+    @media (max-width: 600px) {
+        .my-bookings-page {
+            padding: 2rem 4%;
+        }
+
+        .booking-header {
+            flex-direction: column;
+        }
+
+        .booking-actions {
+            width: 100%;
+        }
+
+        .btn-edit,
+        .btn-cancel {
+            flex: 1;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="my-bookings">
-    <h1>My Bookings</h1>
+<div class="my-bookings-page">
+    <header class="page-header">
+        <h1>My Reservations</h1>
+        <p>Manage your upcoming and past bookings at Django Restaurant</p>
+    </header>
 
     {% if bookings %}
-    <div class="bookings-list">
+    <div class="bookings-list" role="list">
         {% for booking in bookings %}
-        <div class="booking-card">
-            <div class="date-time">
-                <h3>{{ booking.date|date:"l, F j, Y" }}</h3>
-                <p>{{ booking.time|time:"g:i A" }}</p>
+        <article class="booking-card {% if booking.status == 'cancelled' %}cancelled{% endif %}" role="listitem" aria-label="Booking for {{ booking.date }}">
+            <div class="booking-header">
+                <div class="booking-date-time">
+                    <span class="booking-date">{{ booking.date|date:"l, F j, Y" }}</span>
+                    <span class="booking-time">{{ booking.time|time:"g:i A" }}</span>
+                </div>
+                <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
             </div>
-            <div class="details">
-                <p><strong>Table:</strong> {{ booking.table.table_number }}</p>
-                <p><strong>Party Size:</strong> {{ booking.party_size }} guests</p>
+
+            <div class="booking-details">
+                <div class="detail-item">
+                    <span class="detail-label">Guests</span>
+                    <span class="detail-value">{{ booking.party_size }} people</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Table</span>
+                    <span class="detail-value">{% if booking.table %}Table {{ booking.table.table_number }}{% else %}Pending{% endif %}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Booked On</span>
+                    <span class="detail-value">{{ booking.created_at|date:"M j, Y" }}</span>
+                </div>
             </div>
-            <div class="details">
-                {% if booking.special_requests %}
-                <p><strong>Notes:</strong> {{ booking.special_requests|truncatewords:10 }}</p>
-                {% endif %}
+
+            {% if booking.special_requests %}
+            <div class="special-requests">
+                <h4>Special Requests</h4>
+                <p>{{ booking.special_requests }}</p>
             </div>
-            <span class="status {{ booking.status }}">{{ booking.get_status_display }}</span>
-        </div>
+            {% endif %}
+
+            {% if booking.status != 'cancelled' and booking.status != 'completed' %}
+            <div class="booking-actions">
+                <a href="{% url 'edit_booking' booking.id %}" class="btn-edit" aria-label="Edit reservation for {{ booking.date }}">
+                    ✏️ Edit Reservation
+                </a>
+                <form action="{% url 'cancel_booking' booking.id %}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-cancel" aria-label="Cancel reservation for {{ booking.date }}">
+                        ✕ Cancel
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </article>
         {% endfor %}
     </div>
     {% else %}
     <div class="no-bookings">
-        <p>You don't have any bookings yet.</p>
+        <h2>No Reservations Yet</h2>
+        <p>You haven't made any reservations. Book a table to get started!</p>
         <a href="{% url 'booking' %}" class="btn">Book a Table</a>
     </div>
     {% endif %}

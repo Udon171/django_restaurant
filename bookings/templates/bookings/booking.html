@@ -86,6 +86,80 @@
         border-color: #ee9090;
     }
 
+    /* Account Creation Section */
+    .account-section {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #444;
+    }
+
+    .account-divider {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .account-divider span {
+        background-color: #242424;
+        padding: 0 1rem;
+        color: #d4af37;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .checkbox-group {
+        margin-bottom: 1rem;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        cursor: pointer;
+        color: #f5f5f5;
+        font-weight: normal;
+    }
+
+    .form-checkbox {
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        accent-color: #d4af37;
+        cursor: pointer;
+        margin-top: 2px;
+    }
+
+    .checkbox-text {
+        flex: 1;
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #888;
+        margin-top: 0.5rem;
+        margin-left: 2rem;
+    }
+
+    .password-fields {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        border: 1px solid #333;
+    }
+
+    .logged-in-note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: #2d4a2d;
+        border-radius: 8px;
+        color: #90ee90;
+        font-size: 0.9rem;
+    }
+
+    .logged-in-note p {
+        margin: 0;
+    }
+
     .submit-btn {
         width: 100%;
         padding: 1rem;
@@ -388,6 +462,26 @@
         display: inline-block;
     }
 
+    .confirmation-section .account-created-note {
+        color: #90ee90;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        background: #2d4a2d;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    .confirmation-section .account-created-note a {
+        color: #d4af37;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .confirmation-section .account-created-note a:hover {
+        text-decoration: underline;
+    }
+
     .booking-details {
         background: #242424;
         padding: 1rem 1.5rem;
@@ -564,6 +658,45 @@
                     {{ form.special_requests }}
                 </div>
 
+                <!-- Account Creation Section -->
+                {% if not user.is_authenticated %}
+                <div class="account-section" id="accountSection">
+                    <div class="account-divider">
+                        <span>Optional: Create Account</span>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            {{ form.create_account }}
+                            <span class="checkbox-text">{{ form.create_account.label }}</span>
+                        </label>
+                        <p class="help-text">Create an account to view, edit, or cancel your reservations online.</p>
+                    </div>
+
+                    <div class="password-fields" id="passwordFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="id_password">
+                                Password
+                                <span class="required" aria-hidden="true">*</span>
+                            </label>
+                            {{ form.password }}
+                            <p class="help-text">Must be at least 8 characters long.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password_confirm">
+                                Confirm Password
+                                <span class="required" aria-hidden="true">*</span>
+                            </label>
+                            {{ form.password_confirm }}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="logged-in-note">
+                    <p>✓ Logged in as <strong>{{ user.email }}</strong>. This booking will be saved to your account.</p>
+                </div>
+                {% endif %}
+
                 <button type="submit" class="submit-btn" id="submitBtn">
                     Reserve Table
                 </button>
@@ -652,6 +785,26 @@
     guestCountDisplay.textContent = initialCount;
     guestCountDisplay.setAttribute('aria-label', initialCount + ' guests');
 
+    // Account creation checkbox toggle
+    const createAccountCheckbox = document.getElementById('id_create_account');
+    const passwordFields = document.getElementById('passwordFields');
+    
+    if (createAccountCheckbox && passwordFields) {
+        createAccountCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                passwordFields.style.display = 'block';
+                document.getElementById('id_password').setAttribute('required', 'true');
+                document.getElementById('id_password_confirm').setAttribute('required', 'true');
+            } else {
+                passwordFields.style.display = 'none';
+                document.getElementById('id_password').removeAttribute('required');
+                document.getElementById('id_password_confirm').removeAttribute('required');
+                document.getElementById('id_password').value = '';
+                document.getElementById('id_password_confirm').value = '';
+            }
+        });
+    }
+
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -706,8 +859,20 @@
                     confirmationSection.classList.add('visible');
                     checkmark.classList.add('animate');
                     
+                    // Show account created message if applicable
+                    if (data.account_created) {
+                        const accountNote = document.createElement('p');
+                        accountNote.className = 'account-created-note';
+                        accountNote.innerHTML = '✓ Account created! <a href="{% url "my_bookings" %}">View your bookings</a>';
+                        confirmationSection.appendChild(accountNote);
+                    }
+                    
                     // Announce to screen readers
-                    announceToScreenReader('Table successfully reserved for ' + data.booking.party_size + ' guests on ' + data.booking.date + ' at ' + data.booking.time);
+                    let announcement = 'Table successfully reserved for ' + data.booking.party_size + ' guests on ' + data.booking.date + ' at ' + data.booking.time;
+                    if (data.account_created) {
+                        announcement += '. Your account has been created.';
+                    }
+                    announceToScreenReader(announcement);
                     
                     // Focus confirmation for keyboard users
                     confirmationSection.focus();

@@ -14,6 +14,8 @@ urlpatterns = [
     path('book/submit/', booking_views.submit_booking, name='submit_booking'),
     path('book/success/', booking_views.booking_success, name='booking_success'),
     path('book/my-bookings/', booking_views.my_bookings, name='my_bookings'),
+    path('book/edit/<int:booking_id>/', booking_views.edit_booking, name='edit_booking'),
+    path('book/cancel/<int:booking_id>/', booking_views.cancel_booking, name='cancel_booking'),
     path('menu/', menu_views.menu_page, name='menu'),
     # Auth URLs
     path('login/', auth_views.LoginView.as_view(template_name='auth/login.html'), name='login'),

@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from .models import Booking
 from datetime import date, time
 
@@ -24,6 +26,39 @@ class BookingForm(forms.ModelForm):
     ]
     
     time = forms.ChoiceField(choices=TIME_CHOICES, widget=forms.Select(attrs={'class': 'form-input'}))
+    
+    # Account creation fields
+    create_account = forms.BooleanField(
+        required=False,
+        initial=False,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-checkbox',
+            'id': 'id_create_account'
+        }),
+        label='Create an account to manage my reservations'
+    )
+    
+    password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Create a password',
+            'autocomplete': 'new-password',
+            'id': 'id_password'
+        }),
+        label='Password'
+    )
+    
+    password_confirm = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Confirm your password',
+            'autocomplete': 'new-password',
+            'id': 'id_password_confirm'
+        }),
+        label='Confirm Password'
+    )
     
     class Meta:
         model = Booking
@@ -72,3 +107,33 @@ class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['special_requests'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        create_account = cleaned_data.get('create_account')
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+        email = cleaned_data.get('guest_email')
+        
+        if create_account:
+            # Password is required if creating account
+            if not password:
+                self.add_error('password', 'Password is required to create an account.')
+            elif len(password) < 8:
+                self.add_error('password', 'Password must be at least 8 characters long.')
+            
+            if password and password != password_confirm:
+                self.add_error('password_confirm', 'Passwords do not match.')
+            
+            # Check if email already exists as a user
+            if email and User.objects.filter(email=email).exists():
+                self.add_error('guest_email', 'An account with this email already exists. Please login instead.')
+            
+            # Validate password strength
+            if password:
+                try:
+                    validate_password(password)
+                except forms.ValidationError as e:
+                    self.add_error('password', e.messages)
+        
+        return cleaned_data

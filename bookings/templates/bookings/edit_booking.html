@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Reservation | Django Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-booking-page {
+        padding: 3rem 5%;
+        max-width: 600px;
+        margin: 0 auto;
+        min-height: calc(100vh - 160px);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: clamp(1.8rem, 5vw, 2.2rem);
+        color: #d4af37;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+        color: #999;
+    }
+
+    .edit-form {
+        background-color: #242424;
+        padding: 2rem;
+        border-radius: 12px;
+    }
+
+    .current-booking {
+        background-color: #1a1a1a;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border-left: 3px solid #d4af37;
+    }
+
+    .current-booking h3 {
+        color: #d4af37;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+
+    .current-booking p {
+        color: #ccc;
+        margin: 0.25rem 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #d4af37;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #444;
+        border-radius: 8px;
+        background-color: #1a1a1a;
+        color: #f5f5f5;
+        font-size: 1rem;
+        font-family: inherit;
+        min-height: 44px;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-save {
+        flex: 2;
+        padding: 1rem;
+        background: linear-gradient(135deg, #d4af37 0%, #b8960c 100%);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-family: inherit;
+        min-height: 48px;
+    }
+
+    .btn-save:hover,
+    .btn-save:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-back {
+        flex: 1;
+        padding: 1rem;
+        background-color: transparent;
+        color: #ccc;
+        border: 2px solid #444;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-back:hover,
+    .btn-back:focus {
+        border-color: #d4af37;
+        color: #d4af37;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .edit-booking-page {
+            padding: 2rem 4%;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-save,
+        .btn-back {
+            flex: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-booking-page">
+    <header class="page-header">
+        <h1>Edit Reservation</h1>
+        <p>Update your booking details below</p>
+    </header>
+
+    <form class="edit-form" method="POST" action="{% url 'edit_booking' booking.id %}">
+        {% csrf_token %}
+        
+        <div class="current-booking">
+            <h3>Current Booking</h3>
+            <p><strong>Name:</strong> {{ booking.guest_name }}</p>
+            <p><strong>Email:</strong> {{ booking.guest_email }}</p>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="date">Date <span style="color: #ee9090;">*</span></label>
+                <input type="date" id="date" name="date" class="form-input" 
+                       value="{{ booking.date|date:'Y-m-d' }}" required
+                       min="{% now 'Y-m-d' %}">
+            </div>
+            <div class="form-group">
+                <label for="time">Time <span style="color: #ee9090;">*</span></label>
+                <select id="time" name="time" class="form-input" required>
+                    {% for value, label in time_choices %}
+                    <option value="{{ value }}" {% if booking.time|time:"H:i" == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="party_size">Number of Guests <span style="color: #ee9090;">*</span></label>
+            <input type="number" id="party_size" name="party_size" class="form-input"
+                   value="{{ booking.party_size }}" min="1" max="12" required>
+        </div>
+
+        <div class="form-group">
+            <label for="special_requests">Special Requests</label>
+            <textarea id="special_requests" name="special_requests" class="form-input" rows="3"
+                      placeholder="Any dietary requirements or special requests?">{{ booking.special_requests }}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'my_bookings' %}" class="btn-back">← Back</a>
+            <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

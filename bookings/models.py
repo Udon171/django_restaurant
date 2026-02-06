@@ -105,7 +105,7 @@ Django Restaurant Team
 
 ━━━━━━━━━━━━━━━━━━━━━
 If you need to modify or cancel your reservation, 
-please contact us at restaurant@example.com
+please visit your account dashboard or contact us.
         """
         
         try:
@@ -118,6 +118,74 @@ please contact us at restaurant@example.com
             )
             self.confirmation_sent = True
             self.save(update_fields=['confirmation_sent'])
+            return True
+        except Exception:
+            return False
+
+    def send_update_email(self):
+        """Send booking update confirmation email."""
+        subject = 'Reservation Updated - Django Restaurant'
+        message = f"""
+Dear {self.guest_name},
+
+Your reservation at Django Restaurant has been updated.
+
+Updated Booking Details:
+━━━━━━━━━━━━━━━━━━━━━
+Date: {self.date.strftime('%A, %B %d, %Y')}
+Time: {self.time.strftime('%I:%M %p')}
+Party Size: {self.party_size} guests
+Status: {self.get_status_display()}
+
+{f'Special Requests: {self.special_requests}' if self.special_requests else ''}
+
+We look forward to welcoming you!
+
+Best regards,
+Django Restaurant Team
+        """
+        
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@djangorestaurant.com',
+                [self.guest_email],
+                fail_silently=True,
+            )
+            return True
+        except Exception:
+            return False
+
+    def send_cancellation_email(self):
+        """Send booking cancellation confirmation email."""
+        subject = 'Reservation Cancelled - Django Restaurant'
+        message = f"""
+Dear {self.guest_name},
+
+Your reservation at Django Restaurant has been cancelled.
+
+Cancelled Booking Details:
+━━━━━━━━━━━━━━━━━━━━━
+Date: {self.date.strftime('%A, %B %d, %Y')}
+Time: {self.time.strftime('%I:%M %p')}
+Party Size: {self.party_size} guests
+
+We're sorry to see you go! If you'd like to make a new reservation,
+please visit our website anytime.
+
+Best regards,
+Django Restaurant Team
+        """
+        
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@djangorestaurant.com',
+                [self.guest_email],
+                fail_silently=True,
+            )
             return True
         except Exception:
             return False
