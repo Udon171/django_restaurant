@@ -600,7 +600,7 @@
 
             <div class="form-errors" id="formErrors" role="alert" aria-live="polite"></div>
 
-            <form class="booking-form" id="bookingForm" novalidate>
+            <form class="booking-form" method="post" id="bookingForm" novalidate>
                 {% csrf_token %}
                 
                 <div class="form-group">
