@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST, require_http_methods
 from .models import Table, Booking
 from .forms import BookingForm
+from datetime import datetime
 import json
 
 
@@ -126,11 +127,11 @@ def edit_booking(request, booking_id):
         new_party_size = request.POST.get('party_size')
         new_special_requests = request.POST.get('special_requests', '')
         
-        # Update booking
+        # Update booking (parse strings into proper Python objects)
         if new_date:
-            booking.date = new_date
+            booking.date = datetime.strptime(new_date, '%Y-%m-%d').date()
         if new_time:
-            booking.time = new_time
+            booking.time = datetime.strptime(new_time, '%H:%M').time()
         if new_party_size:
             booking.party_size = int(new_party_size)
             # Reassign table if party size changed significantly
