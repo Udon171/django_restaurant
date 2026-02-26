@@ -1,2 +1,1 @@
-release: python manage.py collectstatic --noinput
-web: gunicorn my_project.wsgi
+web: python manage.py collectstatic --noinput && gunicorn my_project.wsgi
